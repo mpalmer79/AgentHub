@@ -1,12 +1,15 @@
 {
   "name": "agenthub-frontend",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "next": "14.1.0",
@@ -27,6 +30,13 @@
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
     "eslint": "^8.56.0",
-    "eslint-config-next": "14.1.0"
+    "eslint-config-next": "14.1.0",
+    "@testing-library/react": "^14.2.1",
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/user-event": "^14.5.2",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "@types/jest": "^29.5.12",
+    "ts-jest": "^29.1.2"
   }
 }
