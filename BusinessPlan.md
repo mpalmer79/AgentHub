@@ -2,7 +2,7 @@
 
 **Autonomous AI Agents for SMB Operations**
 
-*Version 4.0 | February 2026*
+*Version 5.0 | February 2026*
 
 ---
 
@@ -11,9 +11,9 @@
 AgentHub delivers a suite of autonomous AI agents that handle critical business operations for small and medium-sized businesses. Our agents work independently—categorizing transactions, managing emails, screening resumes, and handling customer inquiries around the clock.
 
 **Business Model:** 
-- $300 one-time setup fee
-- Multi-agent packages on annual contracts
-- Monthly billing averaging $250/month
+- $750 one-time setup fee (annual contract) or $1,500 (monthly plan)
+- Multi-agent packages on annual or monthly contracts
+- Monthly billing averaging $499/month
 - Commission-only team compensation
 
 **Team (4 people from Day 1):**
@@ -23,13 +23,13 @@ AgentHub delivers a suite of autonomous AI agents that handle critical business 
 - Sales Representative 2
 
 **Key Metrics:**
-- Setup fee: $300 (one-time)
-- Average monthly revenue: $250/customer
+- Setup fee: $750 (annual) / $1,500 (monthly)
+- Average monthly revenue: $499/customer
 - Growth rate: 1 new customer per week
 - Fixed overhead: $300/month
 - Profitable from Month 1
 
-**Year 1 Target:** 48 customers | $144K ARR | $92K total revenue
+**Year 1 Target:** 48 customers | $287K ARR | $180K total revenue
 
 ---
 
@@ -37,77 +37,104 @@ AgentHub delivers a suite of autonomous AI agents that handle critical business 
 
 ### Pricing Structure
 
-**One-Time Setup Fee:** $300
-- Covers onboarding, configuration, initial training
-- Paid at contract signing
+**One-Time Setup Fee (Paid Upfront):**
+- $750 with annual contract (12-month commitment)
+- $1,500 with monthly plan (month-to-month)
+- Covers onboarding, configuration, integrations, and initial training
 
-**Monthly Packages (12-month contracts):**
+**Monthly Packages:**
 
 | Package | Agents Included | Monthly Price |
 |---------|-----------------|---------------|
-| Starter | 3 agents | $199/mo |
-| Professional | 6 agents | $299/mo |
-| Enterprise | All 12 agents | $399/mo |
+| Starter | 3 agents | $399/mo |
+| Professional | 6 agents | $499/mo |
+| Enterprise | All 12 agents | $799/mo |
 
-**Blended Average Revenue Per Customer:** $250/month
+**Blended Average Revenue Per Customer:** $499/month
 
-### Total First-Year Customer Value
+### Total First-Year Customer Value (Annual Contract)
 
 | Component | Amount |
 |-----------|--------|
-| Setup fee | $300 |
-| Monthly × 12 | $3,000 |
-| **Total Year 1 Value** | **$3,300** |
+| Setup fee | $750 |
+| Monthly × 12 | $5,988 |
+| **Total Year 1 Value** | **$6,738** |
+
+### Total First-Year Customer Value (Monthly Plan)
+
+| Component | Amount |
+|-----------|--------|
+| Setup fee | $1,500 |
+| Monthly × 12 | $5,988 |
+| **Total Year 1 Value** | **$7,488** |
 
 ---
 
 ## Revenue Allocation
 
-### Setup Fee Split ($300 one-time)
+### Setup Fee Split - Annual Contract ($750 one-time)
 
 | Allocation | Percentage | Amount |
 |------------|------------|--------|
-| Sales Rep (who closed) | 50% | $150 |
-| Government Tax | 20% | $60 |
-| Company Operating | 30% | $90 |
-| **Total** | **100%** | **$300** |
+| Sales Rep (who closed) | 50% | $375 |
+| Government Tax | 20% | $150 |
+| Company Operating | 30% | $225 |
+| **Total** | **100%** | **$750** |
 
-### Monthly Recurring Split ($250/month)
+### Setup Fee Split - Monthly Plan ($1,500 one-time)
 
 | Allocation | Percentage | Amount |
 |------------|------------|--------|
-| CEO/President | 20% | $50.00 |
-| Sales Rep (who closed) | 20% | $50.00 |
-| Head of Technology | 20% | $50.00 |
-| Government Tax | 20% | $50.00 |
-| Anthropic API | 5% | $12.50 |
-| Company Operating | 15% | $37.50 |
-| **Total** | **100%** | **$250.00** |
+| Sales Rep (who closed) | 50% | $750 |
+| Government Tax | 20% | $300 |
+| Company Operating | 30% | $450 |
+| **Total** | **100%** | **$1,500** |
+
+### Monthly Recurring Split ($499/month)
+
+| Allocation | Percentage | Amount |
+|------------|------------|--------|
+| CEO/President | 20% | $99.80 |
+| Sales Rep (who closed) | 20% | $99.80 |
+| Head of Technology | 20% | $99.80 |
+| Government Tax | 20% | $99.80 |
+| Anthropic API | 5% | $24.95 |
+| Company Operating | 15% | $74.85 |
+| **Total** | **100%** | **$499.00** |
 
 ---
 
 ## Commission Structure
 
-### Sales Representative Earnings (Per Customer)
+### Sales Representative Earnings (Per Customer - Annual Contract)
 
 | Component | Amount | Timing |
 |-----------|--------|--------|
-| Setup fee commission | $150 | One-time at close |
-| Monthly commission | $50 | Recurring monthly |
-| **Year 1 total per customer** | **$750** | |
+| Setup fee commission | $375 | One-time at close |
+| Monthly commission | $99.80 | Recurring monthly |
+| **Year 1 total per customer** | **$1,573** | |
+
+### Sales Representative Earnings (Per Customer - Monthly Plan)
+
+| Component | Amount | Timing |
+|-----------|--------|--------|
+| Setup fee commission | $750 | One-time at close |
+| Monthly commission | $99.80 | Recurring monthly |
+| **Year 1 total per customer** | **$1,948** | |
 
 ### CEO & Tech Lead Earnings (Per Customer)
 
 | Component | Amount | Timing |
 |-----------|--------|--------|
-| Monthly commission | $50 each | Recurring monthly |
-| **Year 1 total per customer** | **$600 each** | |
+| Monthly commission | $99.80 each | Recurring monthly |
+| **Year 1 total per customer** | **$1,198 each** | |
 
 ### Why This Structure Works
 
 **For Sales Reps:**
-- Strong upfront incentive ($150) to close deals
-- Ongoing income stream ($50/mo) rewards retention
+- Strong upfront incentive ($375-$750) to close deals
+- Ongoing income stream ($99.80/mo) rewards retention
+- Higher commission on monthly plans incentivizes flexibility
 - No cap on earnings
 
 **For CEO & Tech Lead:**
@@ -138,9 +165,9 @@ AgentHub delivers a suite of autonomous AI agents that handle critical business 
 
 | Expense | Cost | % of Revenue |
 |---------|------|--------------|
-| Anthropic API | $12.50 | 5% |
-| Payment Processing | ~$7.50 | ~3% |
-| **Total Variable** | **~$20** | **~8%** |
+| Anthropic API | $24.95 | 5% |
+| Payment Processing | ~$15.00 | ~3% |
+| **Total Variable** | **~$40** | **~8%** |
 
 ---
 
@@ -150,8 +177,9 @@ AgentHub delivers a suite of autonomous AI agents that handle critical business 
 
 - **Growth rate:** 1 new customer per week (4 per month)
 - **Churn:** 0% Year 1 (annual contracts)
-- **Setup fee:** $300 per new customer
-- **Monthly revenue:** $250 per customer
+- **Contract mix:** 80% annual ($750 setup), 20% monthly ($1,500 setup)
+- **Blended setup fee:** $900 per new customer
+- **Monthly revenue:** $499 per customer
 - **Fixed overhead:** $300/month
 - **2 sales reps splitting new customers evenly**
 
@@ -161,42 +189,42 @@ AgentHub delivers a suite of autonomous AI agents that handle critical business 
 
 | Month | New | Total | Setup Fees | Monthly Rev | Total Rev |
 |-------|-----|-------|------------|-------------|-----------|
-| 1 | 4 | 4 | $1,200 | $1,000 | $2,200 |
-| 2 | 4 | 8 | $1,200 | $2,000 | $3,200 |
-| 3 | 4 | 12 | $1,200 | $3,000 | $4,200 |
-| 4 | 4 | 16 | $1,200 | $4,000 | $5,200 |
-| 5 | 4 | 20 | $1,200 | $5,000 | $6,200 |
-| 6 | 4 | 24 | $1,200 | $6,000 | $7,200 |
-| 7 | 4 | 28 | $1,200 | $7,000 | $8,200 |
-| 8 | 4 | 32 | $1,200 | $8,000 | $9,200 |
-| 9 | 4 | 36 | $1,200 | $9,000 | $10,200 |
-| 10 | 4 | 40 | $1,200 | $10,000 | $11,200 |
-| 11 | 4 | 44 | $1,200 | $11,000 | $12,200 |
-| 12 | 4 | 48 | $1,200 | $12,000 | $13,200 |
-| **Total** | **48** | | **$14,400** | **$78,000** | **$92,400** |
+| 1 | 4 | 4 | $3,600 | $1,996 | $5,596 |
+| 2 | 4 | 8 | $3,600 | $3,992 | $7,592 |
+| 3 | 4 | 12 | $3,600 | $5,988 | $9,588 |
+| 4 | 4 | 16 | $3,600 | $7,984 | $11,584 |
+| 5 | 4 | 20 | $3,600 | $9,980 | $13,580 |
+| 6 | 4 | 24 | $3,600 | $11,976 | $15,576 |
+| 7 | 4 | 28 | $3,600 | $13,972 | $17,572 |
+| 8 | 4 | 32 | $3,600 | $15,968 | $19,568 |
+| 9 | 4 | 36 | $3,600 | $17,964 | $21,564 |
+| 10 | 4 | 40 | $3,600 | $19,960 | $23,560 |
+| 11 | 4 | 44 | $3,600 | $21,956 | $25,556 |
+| 12 | 4 | 48 | $3,600 | $23,952 | $27,552 |
+| **Total** | **48** | | **$43,200** | **$155,688** | **$198,888** |
 
 ---
 
 ### Year 1: Revenue Allocation
 
-**Setup Fee Revenue: $14,400**
+**Setup Fee Revenue: $43,200** (blended)
 
 | Allocation | % | Amount |
 |------------|---|--------|
-| Sales Reps (total) | 50% | $7,200 |
-| Tax | 20% | $2,880 |
-| Company | 30% | $4,320 |
+| Sales Reps (total) | 50% | $21,600 |
+| Tax | 20% | $8,640 |
+| Company | 30% | $12,960 |
 
-**Monthly Recurring Revenue: $78,000**
+**Monthly Recurring Revenue: $155,688**
 
 | Allocation | % | Amount |
 |------------|---|--------|
-| CEO | 20% | $15,600 |
-| Sales Reps (total) | 20% | $15,600 |
-| Tech Lead | 20% | $15,600 |
-| Tax | 20% | $15,600 |
-| Anthropic API | 5% | $3,900 |
-| Company | 15% | $11,700 |
+| CEO | 20% | $31,138 |
+| Sales Reps (total) | 20% | $31,138 |
+| Tech Lead | 20% | $31,138 |
+| Tax | 20% | $31,138 |
+| Anthropic API | 5% | $7,784 |
+| Company | 15% | $23,353 |
 
 ---
 
@@ -204,11 +232,11 @@ AgentHub delivers a suite of autonomous AI agents that handle critical business 
 
 | Role | Setup Commission | Monthly Commission | **Year 1 Total** |
 |------|------------------|-------------------|------------------|
-| CEO/President | $0 | $15,600 | **$15,600** |
-| Head of Technology | $0 | $15,600 | **$15,600** |
-| Sales Rep 1 (24 customers) | $3,600 | $7,800 | **$11,400** |
-| Sales Rep 2 (24 customers) | $3,600 | $7,800 | **$11,400** |
-| **Team Total** | **$7,200** | **$46,800** | **$54,000** |
+| CEO/President | $0 | $31,138 | **$31,138** |
+| Head of Technology | $0 | $31,138 | **$31,138** |
+| Sales Rep 1 (24 customers) | $10,800 | $15,569 | **$26,369** |
+| Sales Rep 2 (24 customers) | $10,800 | $15,569 | **$26,369** |
+| **Team Total** | **$21,600** | **$93,413** | **$115,013** |
 
 ---
 
@@ -216,20 +244,20 @@ AgentHub delivers a suite of autonomous AI agents that handle critical business 
 
 | Line Item | Amount |
 |-----------|--------|
-| **Total Revenue** | **$92,400** |
+| **Total Revenue** | **$198,888** |
 | | |
 | *Distributions:* | |
-| Team Commissions | $(54,000) |
-| Tax Set-Aside | $(18,480) |
-| Anthropic API | $(3,900) |
+| Team Commissions | $(115,013) |
+| Tax Set-Aside | $(39,778) |
+| Anthropic API | $(7,784) |
 | | |
-| **Company Operating Allocation** | **$16,020** |
+| **Company Operating Allocation** | **$36,313** |
 | | |
 | *Expenses:* | |
 | Fixed Overhead (12 months) | $(3,600) |
-| Payment Processing (~3%) | $(2,772) |
+| Payment Processing (~3%) | $(5,967) |
 | | |
-| **Net Company Profit** | **$9,648** |
+| **Net Company Profit** | **$26,746** |
 
 ---
 
@@ -251,19 +279,19 @@ AgentHub delivers a suite of autonomous AI agents that handle critical business 
 
 | Source | Calculation | Amount |
 |--------|-------------|--------|
-| Setup Fees | 52 × $300 | $15,600 |
-| Monthly Recurring | ~$214,500 | $214,500 |
-| **Total Revenue** | | **$230,100** |
+| Setup Fees | 52 × $900 (blended) | $46,800 |
+| Monthly Recurring | ~$428,577 | $428,577 |
+| **Total Revenue** | | **$475,377** |
 
 ### Year 2 Team Earnings
 
 | Role | Setup | Monthly | **Year 2 Total** |
 |------|-------|---------|------------------|
-| CEO/President | $0 | $42,900 | **$42,900** |
-| Head of Technology | $0 | $42,900 | **$42,900** |
-| Sales Rep 1 (26 new) | $3,900 | $21,450 | **$25,350** |
-| Sales Rep 2 (26 new) | $3,900 | $21,450 | **$25,350** |
-| **Team Total** | **$7,800** | **$128,700** | **$136,500** |
+| CEO/President | $0 | $85,715 | **$85,715** |
+| Head of Technology | $0 | $85,715 | **$85,715** |
+| Sales Rep 1 (26 new) | $11,700 | $42,858 | **$54,558** |
+| Sales Rep 2 (26 new) | $11,700 | $42,858 | **$54,558** |
+| **Team Total** | **$23,400** | **$257,146** | **$280,546** |
 
 *Note: Sales rep monthly commission includes both new customers and continuing customers from Year 1*
 
@@ -271,14 +299,14 @@ AgentHub delivers a suite of autonomous AI agents that handle critical business 
 
 | Line Item | Amount |
 |-----------|--------|
-| Total Revenue | $230,100 |
-| Team Commissions | $(136,500) |
-| Tax Set-Aside | $(46,020) |
-| Anthropic API | $(10,725) |
-| **Company Operating Allocation** | **$36,855** |
+| Total Revenue | $475,377 |
+| Team Commissions | $(280,546) |
+| Tax Set-Aside | $(95,075) |
+| Anthropic API | $(21,429) |
+| **Company Operating Allocation** | **$78,327** |
 | Fixed Overhead | $(6,000) |
-| Payment Processing | $(6,903) |
-| **Net Company Profit** | **$23,952** |
+| Payment Processing | $(14,261) |
+| **Net Company Profit** | **$58,066** |
 
 ---
 
@@ -300,32 +328,32 @@ AgentHub delivers a suite of autonomous AI agents that handle critical business 
 
 | Source | Calculation | Amount |
 |--------|-------------|--------|
-| Setup Fees | 104 × $300 | $31,200 |
-| Monthly Recurring | ~$427,500 | $427,500 |
-| **Total Revenue** | | **$458,700** |
+| Setup Fees | 104 × $900 | $93,600 |
+| Monthly Recurring | ~$854,058 | $854,058 |
+| **Total Revenue** | | **$947,658** |
 
 ### Year 3 Team Earnings
 
 | Role | Setup | Monthly | **Year 3 Total** |
 |------|-------|---------|------------------|
-| CEO/President | $0 | $85,500 | **$85,500** |
-| Head of Technology | $0 | $85,500 | **$85,500** |
-| Sales Rep 1 (52 new) | $7,800 | $42,750 | **$50,550** |
-| Sales Rep 2 (52 new) | $7,800 | $42,750 | **$50,550** |
-| **Team Total** | **$15,600** | **$256,500** | **$272,100** |
+| CEO/President | $0 | $170,812 | **$170,812** |
+| Head of Technology | $0 | $170,812 | **$170,812** |
+| Sales Rep 1 (52 new) | $23,400 | $85,406 | **$108,806** |
+| Sales Rep 2 (52 new) | $23,400 | $85,406 | **$108,806** |
+| **Team Total** | **$46,800** | **$512,435** | **$559,235** |
 
 ### Year 3 Company Financials
 
 | Line Item | Amount |
 |-----------|--------|
-| Total Revenue | $458,700 |
-| Team Commissions | $(272,100) |
-| Tax Set-Aside | $(91,740) |
-| Anthropic API | $(21,375) |
-| **Company Operating Allocation** | **$73,485** |
+| Total Revenue | $947,658 |
+| Team Commissions | $(559,235) |
+| Tax Set-Aside | $(189,532) |
+| Anthropic API | $(42,703) |
+| **Company Operating Allocation** | **$156,188** |
 | Fixed Overhead | $(9,600) |
-| Payment Processing | $(13,761) |
-| **Net Company Profit** | **$50,124** |
+| Payment Processing | $(28,430) |
+| **Net Company Profit** | **$118,158** |
 
 ---
 
@@ -337,33 +365,33 @@ AgentHub delivers a suite of autonomous AI agents that handle critical business 
 |--------|--------|--------|--------|
 | New Customers | 48 | 52 | 104 |
 | Ending Customers | 48 | 95 | 189 |
-| Setup Fee Revenue | $14,400 | $15,600 | $31,200 |
-| Monthly Revenue | $78,000 | $214,500 | $427,500 |
-| **Total Revenue** | **$92,400** | **$230,100** | **$458,700** |
-| ARR (end of year) | $144,000 | $285,000 | $567,000 |
+| Setup Fee Revenue | $43,200 | $46,800 | $93,600 |
+| Monthly Revenue | $155,688 | $428,577 | $854,058 |
+| **Total Revenue** | **$198,888** | **$475,377** | **$947,658** |
+| ARR (end of year) | $287,424 | $568,620 | $1,131,132 |
 
 ### Team Earnings
 
 | Role | Year 1 | Year 2 | Year 3 | 3-Year Total |
 |------|--------|--------|--------|--------------|
-| CEO/President | $15,600 | $42,900 | $85,500 | **$144,000** |
-| Head of Technology | $15,600 | $42,900 | $85,500 | **$144,000** |
-| Sales Rep 1 | $11,400 | $25,350 | $50,550 | **$87,300** |
-| Sales Rep 2 | $11,400 | $25,350 | $50,550 | **$87,300** |
-| **Team Total** | **$54,000** | **$136,500** | **$272,100** | **$462,600** |
+| CEO/President | $31,138 | $85,715 | $170,812 | **$287,665** |
+| Head of Technology | $31,138 | $85,715 | $170,812 | **$287,665** |
+| Sales Rep 1 | $26,369 | $54,558 | $108,806 | **$189,733** |
+| Sales Rep 2 | $26,369 | $54,558 | $108,806 | **$189,733** |
+| **Team Total** | **$115,013** | **$280,546** | **$559,235** | **$954,794** |
 
 ### Company Performance
 
 | Metric | Year 1 | Year 2 | Year 3 | 3-Year Total |
 |--------|--------|--------|--------|--------------|
-| Total Revenue | $92,400 | $230,100 | $458,700 | $781,200 |
-| Team Commissions | $54,000 | $136,500 | $272,100 | $462,600 |
-| Tax Set-Aside | $18,480 | $46,020 | $91,740 | $156,240 |
-| API Costs | $3,900 | $10,725 | $21,375 | $36,000 |
-| Company Operating | $16,020 | $36,855 | $73,485 | $126,360 |
+| Total Revenue | $198,888 | $475,377 | $947,658 | $1,621,923 |
+| Team Commissions | $115,013 | $280,546 | $559,235 | $954,794 |
+| Tax Set-Aside | $39,778 | $95,075 | $189,532 | $324,384 |
+| API Costs | $7,784 | $21,429 | $42,703 | $71,916 |
+| Company Operating | $36,313 | $78,327 | $156,188 | $270,829 |
 | Fixed Overhead | $3,600 | $6,000 | $9,600 | $19,200 |
-| Payment Processing | $2,772 | $6,903 | $13,761 | $23,436 |
-| **Net Company Profit** | **$9,648** | **$23,952** | **$50,124** | **$83,724** |
+| Payment Processing | $5,967 | $14,261 | $28,430 | $48,658 |
+| **Net Company Profit** | **$26,746** | **$58,066** | **$118,158** | **$202,970** |
 
 ---
 
@@ -373,57 +401,57 @@ AgentHub delivers a suite of autonomous AI agents that handle critical business 
 
 | Year | Monthly Avg | Annual |
 |------|-------------|--------|
-| Year 1 | $1,300 | $15,600 |
-| Year 2 | $3,575 | $42,900 |
-| Year 3 | $7,125 | $85,500 |
+| Year 1 | $2,595 | $31,138 |
+| Year 2 | $7,143 | $85,715 |
+| Year 3 | $14,234 | $170,812 |
 
 ### Head of Technology
 
 | Year | Monthly Avg | Annual |
 |------|-------------|--------|
-| Year 1 | $1,300 | $15,600 |
-| Year 2 | $3,575 | $42,900 |
-| Year 3 | $7,125 | $85,500 |
+| Year 1 | $2,595 | $31,138 |
+| Year 2 | $7,143 | $85,715 |
+| Year 3 | $14,234 | $170,812 |
 
 ### Sales Representatives (each)
 
 | Year | Setup Comm | Monthly Comm | Annual Total |
 |------|------------|--------------|--------------|
-| Year 1 | $3,600 | $7,800 | $11,400 |
-| Year 2 | $3,900 | $21,450 | $25,350 |
-| Year 3 | $7,800 | $42,750 | $50,550 |
+| Year 1 | $10,800 | $15,569 | $26,369 |
+| Year 2 | $11,700 | $42,858 | $54,558 |
+| Year 3 | $23,400 | $85,406 | $108,806 |
 
 ---
 
 ## Product: The 12 Agents
 
 ### Finance & Operations
-| Agent | Function |
-|-------|----------|
-| BookkeeperAI | Transaction categorization, reconciliation |
-| CashFlowCommanderAI | Invoice management, payment prediction |
-| VendorNegotiatorAI | Contract analysis, renewal tracking |
-| InventoryIQAI | Demand forecasting, reorder automation |
+| Agent | Function | Price |
+|-------|----------|-------|
+| BookkeeperAI | Transaction categorization, reconciliation | $319/mo |
+| CashFlowCommanderAI | Invoice management, payment prediction | $449/mo |
+| VendorNegotiatorAI | Contract analysis, renewal tracking | $479/mo |
+| InventoryIQAI | Demand forecasting, reorder automation | $369/mo |
 
 ### Communications & Productivity
-| Agent | Function |
-|-------|----------|
-| InboxCommanderAI | Email triage, auto-drafting |
-| AppointmentAI | Smart scheduling, reminders |
-| CustomerCareAI | Ticket triage, response generation |
+| Agent | Function | Price |
+|-------|----------|-------|
+| InboxCommanderAI | Email triage, auto-drafting | $239/mo |
+| AppointmentAI | Smart scheduling, reminders | $159/mo |
+| CustomerCareAI | Ticket triage, response generation | $289/mo |
 
 ### Marketing & Sales
-| Agent | Function |
-|-------|----------|
-| SocialPilotAI | Content creation, post scheduling |
-| ReputationShieldAI | Review monitoring, sentiment analysis |
-| ProposalProAI | Proposal generation, follow-ups |
+| Agent | Function | Price |
+|-------|----------|-------|
+| SocialPilotAI | Content creation, post scheduling | $209/mo |
+| ReputationShieldAI | Review monitoring, sentiment analysis | $259/mo |
+| ProposalProAI | Proposal generation, follow-ups | $319/mo |
 
 ### HR & Compliance
-| Agent | Function |
-|-------|----------|
-| HireWellAI | Resume screening, interview scheduling |
-| ComplianceGuardAI | Regulatory monitoring, audit prep |
+| Agent | Function | Price |
+|-------|----------|-------|
+| HireWellAI | Resume screening, interview scheduling | $399/mo |
+| ComplianceGuardAI | Regulatory monitoring, audit prep | $559/mo |
 
 ---
 
@@ -447,13 +475,13 @@ AgentHub delivers a suite of autonomous AI agents that handle critical business 
 
 ### Customer Lifetime Value
 
-| Component | Value |
-|-----------|-------|
-| Setup fee | $300 |
-| Year 1 monthly | $3,000 |
-| Year 2 monthly (assuming renewal) | $3,000 |
-| Year 3 monthly | $3,000 |
-| **3-Year LTV** | **$9,300** |
+| Component | Annual Contract | Monthly Plan |
+|-----------|-----------------|--------------|
+| Setup fee | $750 | $1,500 |
+| Year 1 monthly | $5,988 | $5,988 |
+| Year 2 monthly | $5,988 | $5,988 |
+| Year 3 monthly | $5,988 | $5,988 |
+| **3-Year LTV** | **$18,714** | **$19,464** |
 
 ---
 
@@ -499,23 +527,23 @@ AgentHub delivers a suite of autonomous AI agents that handle critical business 
 
 ## Anthropic API Budget
 
-### Is 5% ($12.50/customer/month) Realistic?
+### Is 5% ($24.95/customer/month) Realistic?
 
 **Claude 3.5 Sonnet Pricing:**
 - Input: $3 per 1M tokens
 - Output: $15 per 1M tokens
 
-**What $12.50/month Covers:**
+**What $25/month Covers:**
 
 | Usage Level | Tasks/Month | Feasible? |
 |-------------|-------------|-----------|
-| Light | 100-200 | ✅ Yes |
-| Medium | 300-400 | ✅ Yes |
-| Heavy | 500+ | ⚠️ Marginal |
+| Light | 200-400 | ✅ Yes |
+| Medium | 500-750 | ✅ Yes |
+| Heavy | 800+ | ⚠️ Marginal |
 
 **Risk Mitigation:**
 1. Usage limits per package tier
-2. Overage charges ($0.05/task)
+2. Overage charges ($0.10/task)
 3. Use Claude Haiku for simple tasks
 4. Response caching
 
@@ -528,6 +556,7 @@ AgentHub delivers a suite of autonomous AI agents that handle critical business 
 3. **Truly Autonomous** - Agents work 24/7 without oversight
 4. **Annual Contracts** - Predictable revenue, low churn
 5. **Vertical Expertise** - Deep knowledge of target industries
+6. **Flexible Pricing** - Annual discount incentivizes commitment
 
 ---
 
@@ -551,9 +580,9 @@ AgentHub delivers a suite of autonomous AI agents that handle critical business 
 | 10 customers | Month 3 |
 | 25 customers | Month 6 |
 | 48 customers | Month 12 |
-| $285K ARR | Month 24 |
+| $568K ARR | Month 24 |
 | 100 customers | Month 24 |
-| $500K+ ARR | Month 36 |
+| $1M+ ARR | Month 36 |
 
 ---
 
@@ -561,38 +590,43 @@ AgentHub delivers a suite of autonomous AI agents that handle critical business 
 
 ### Per Customer
 
-| Metric | Amount |
-|--------|--------|
-| Setup fee | $300 |
-| Monthly revenue | $250 |
-| Year 1 total value | $3,300 |
-| 3-Year LTV | $9,300 |
+| Metric | Annual Contract | Monthly Plan |
+|--------|-----------------|--------------|
+| Setup fee | $750 | $1,500 |
+| Monthly revenue | $499 | $499 |
+| Year 1 total value | $6,738 | $7,488 |
+| 3-Year LTV | $18,714 | $19,464 |
 
 ### Revenue Splits
 
-**Setup Fee ($300):**
-- Sales Rep: 50% ($150)
-- Tax: 20% ($60)
-- Company: 30% ($90)
+**Setup Fee (Annual - $750):**
+- Sales Rep: 50% ($375)
+- Tax: 20% ($150)
+- Company: 30% ($225)
 
-**Monthly ($250):**
-- CEO: 20% ($50)
-- Sales Rep: 20% ($50)
-- Tech Lead: 20% ($50)
-- Tax: 20% ($50)
-- API: 5% ($12.50)
-- Company: 15% ($37.50)
+**Setup Fee (Monthly - $1,500):**
+- Sales Rep: 50% ($750)
+- Tax: 20% ($300)
+- Company: 30% ($450)
+
+**Monthly ($499):**
+- CEO: 20% ($99.80)
+- Sales Rep: 20% ($99.80)
+- Tech Lead: 20% ($99.80)
+- Tax: 20% ($99.80)
+- API: 5% ($24.95)
+- Company: 15% ($74.85)
 
 ### 3-Year Totals
 
 | Metric | Amount |
 |--------|--------|
-| Total Revenue | $781,200 |
-| Team Earnings | $462,600 |
-| Tax Set-Aside | $156,240 |
-| API Costs | $36,000 |
-| Company Profit | $83,724 |
-| Ending ARR | $567,000 |
+| Total Revenue | $1,621,923 |
+| Team Earnings | $954,794 |
+| Tax Set-Aside | $324,384 |
+| API Costs | $71,916 |
+| Company Profit | $202,970 |
+| Ending ARR | $1,131,132 |
 | Ending Customers | 189 |
 
 ---
@@ -604,10 +638,10 @@ AgentHub is designed for sustainable, profitable growth from Day 1:
 ✅ **No external funding required**
 ✅ **Profitable from Month 1**
 ✅ **Team earnings scale with success**
-✅ **Clear path to $500K+ ARR**
-✅ **$83K+ company profit over 3 years**
+✅ **Clear path to $1M+ ARR**
+✅ **$200K+ company profit over 3 years**
 
-The commission-only model with setup fees eliminates financial risk while creating strong incentives for customer acquisition and retention.
+The commission-only model with tiered setup fees eliminates financial risk while creating strong incentives for customer acquisition and retention. The annual contract discount drives commitment while the monthly option provides flexibility.
 
 ---
 
