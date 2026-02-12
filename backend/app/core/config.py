@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     # Supabase
     SUPABASE_URL: str = os.getenv("SUPABASE_URL", "").rstrip("/")
     SUPABASE_ANON_KEY: str = os.getenv("SUPABASE_ANON_KEY", "")
-    SUPABASE_SERVICE_KEY: str = os.getenv("SUPABASE_SERVICE_KEY", "")
+    SUPABASE_SERVICE_ROLE_KEY: str = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")  # FIXED: was SERVICE_KEY
 
     # Supabase JWT Verification
     SUPABASE_JWKS_URL: str = os.getenv("SUPABASE_JWKS_URL", "")
@@ -85,6 +85,9 @@ class Settings(BaseSettings):
 
         if not self.SUPABASE_ANON_KEY:
             missing.append("SUPABASE_ANON_KEY")
+
+        if not self.SUPABASE_SERVICE_ROLE_KEY:  # FIXED: was INTEGRATION_ENCRYPTION_KEY check
+            missing.append("SUPABASE_SERVICE_ROLE_KEY")
 
         if not self.INTEGRATION_ENCRYPTION_KEY:
             missing.append("INTEGRATION_ENCRYPTION_KEY")
