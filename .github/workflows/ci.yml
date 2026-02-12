@@ -161,7 +161,7 @@ jobs:
 
       - name: Run Ruff formatter check
         run: ruff format --check .
-        continue-on-error: true  # FIXED: Soft fail for formatting only
+        continue-on-error: true
 
   backend-typecheck:
     name: Backend Type Check
@@ -186,7 +186,7 @@ jobs:
 
       - name: Run mypy
         run: mypy app --ignore-missing-imports --no-error-summary
-        continue-on-error: true  # FIXED: Soft fail for type checking (gradual adoption)
+        continue-on-error: true
 
   backend-test:
     name: Backend Tests
@@ -211,13 +211,13 @@ jobs:
           pip install pytest-cov
 
       - name: Run tests with coverage
-        run: pytest --cov=app --cov-report=term-missing  # FIXED: Removed || true
+        run: pytest --cov=app --cov-report=term-missing
         env:
           SUPABASE_URL: https://placeholder.supabase.co
-          SUPABASE_SERVICE_ROLE_KEY: placeholder-service-key-for-ci  # FIXED: Matches config.py
+          SUPABASE_SERVICE_ROLE_KEY: placeholder-service-key-for-ci
           SUPABASE_ANON_KEY: placeholder-anon-key-for-ci
           ANTHROPIC_API_KEY: sk-ant-placeholder-for-ci
-          INTEGRATION_ENCRYPTION_KEY: ci-test-encryption-key-32bytes!
+          INTEGRATION_ENCRYPTION_KEY: LDIEZqRgBcuL0IBDmiL2EzwyUYjIO3cDNyyJH1qKiFA=
 
   # ============================================
   # SECURITY SCANNING
@@ -240,7 +240,7 @@ jobs:
         run: |
           cd backend
           pip-audit -r requirements.txt
-        continue-on-error: true  # FIXED: Soft fail - report but don't block
+        continue-on-error: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -251,7 +251,7 @@ jobs:
         run: |
           cd frontend
           npm audit --audit-level=high
-        continue-on-error: true  # FIXED: Soft fail - report but don't block
+        continue-on-error: true
 
   # ============================================
   # QUALITY GATE
@@ -291,7 +291,7 @@ jobs:
             echo "⚠️ Security Scan: ${{ needs.security-scan.result }}" >> $GITHUB_STEP_SUMMARY
           fi
           
-          echo ""
+          echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Quality gate complete**" >> $GITHUB_STEP_SUMMARY
 
       - name: Fail if critical jobs failed
