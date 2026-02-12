@@ -9,8 +9,9 @@ import secrets
 from urllib.parse import urlencode
 
 from app.core.config import settings
-from app.core.database import get_supabase
-from app.core.auth import get_current_user
+from app.core.database import get_supabase, get_supabase_user
+from app.core.auth import get_current_user, CurrentUser
+from app.core.crypto import encryption_service  # NEW: Import encryption
 
 router = APIRouter()
 
@@ -53,13 +54,12 @@ CALENDAR_SCOPES = [
 
 
 @router.get("/status")
-async def get_integration_status(user=Depends(get_current_user)):
+async def get_integration_status(user: CurrentUser = Depends(get_current_user)):
     """Get status of all integrations for the user"""
-    supabase = get_supabase()
+    supabase = get_supabase_user(user.token)  # FIXED: Use user-scoped client
     result = supabase.table("user_integrations") \
         .select("*") \
-        .eq("user_id", user.id) \
-        .execute()
+        .execute()  # RLS filters by user_id automatically
     
     integrations = {item["integration_type"]: item for item in (result.data or [])}
     
@@ -98,11 +98,11 @@ async def get_integration_status(user=Depends(get_current_user)):
 # =============================================================================
 
 @router.get("/quickbooks/connect")
-async def quickbooks_connect(user=Depends(get_current_user)):
+async def quickbooks_connect(user: CurrentUser = Depends(get_current_user)):
     """Initiate QuickBooks OAuth flow"""
     state = secrets.token_urlsafe(32)
     
-    supabase = get_supabase()
+    supabase = get_supabase_user(user.token)  # FIXED: Use user-scoped client
     supabase.table("oauth_states").insert({
         "state": state,
         "user_id": user.id,
@@ -126,7 +126,7 @@ async def quickbooks_connect(user=Depends(get_current_user)):
 @router.get("/quickbooks/callback")
 async def quickbooks_callback(code: str, state: str, realmId: str):
     """Handle QuickBooks OAuth callback"""
-    supabase = get_supabase()
+    supabase = get_supabase()  # Admin needed for callback (no user session yet)
     
     state_record = supabase.table("oauth_states") \
         .select("*") \
@@ -178,12 +178,13 @@ async def quickbooks_callback(code: str, state: str, realmId: str):
         .eq("integration_type", "quickbooks") \
         .execute()
     
+    # FIXED: Encrypt tokens before storage
     integration_data = {
         "user_id": user_id,
         "integration_type": "quickbooks",
         "status": "active",
-        "access_token": tokens["access_token"],
-        "refresh_token": tokens["refresh_token"],
+        "access_token": encryption_service.encrypt(tokens["access_token"]),
+        "refresh_token": encryption_service.encrypt(tokens["refresh_token"]),
         "token_expires_at": datetime.utcnow().timestamp() + tokens.get("expires_in", 3600),
         "realm_id": realmId,
         "account_name": company_name,
@@ -203,22 +204,21 @@ async def quickbooks_callback(code: str, state: str, realmId: str):
 
 
 @router.delete("/quickbooks/disconnect")
-async def quickbooks_disconnect(user=Depends(get_current_user)):
+async def quickbooks_disconnect(user: CurrentUser = Depends(get_current_user)):
     """Disconnect QuickBooks integration"""
-    supabase = get_supabase()
+    supabase = get_supabase_user(user.token)  # FIXED: Use user-scoped client
     
     supabase.table("user_integrations") \
         .update({"status": "disconnected", "disconnected_at": datetime.utcnow().isoformat()}) \
-        .eq("user_id", user.id) \
         .eq("integration_type", "quickbooks") \
-        .execute()
+        .execute()  # RLS filters by user_id
     
     return {"message": "QuickBooks disconnected successfully"}
 
 
 async def get_quickbooks_client(user_id: str):
     """Get an authenticated QuickBooks client for a user"""
-    supabase = get_supabase()
+    supabase = get_supabase()  # Admin needed to read other user's integrations for workers
     integration = supabase.table("user_integrations") \
         .select("*") \
         .eq("user_id", user_id) \
@@ -230,13 +230,17 @@ async def get_quickbooks_client(user_id: str):
     if not integration.data:
         raise HTTPException(status_code=400, detail="QuickBooks not connected")
     
+    # FIXED: Decrypt tokens when reading
+    access_token = encryption_service.decrypt(integration.data["access_token"])
+    refresh_token = encryption_service.decrypt(integration.data["refresh_token"])
+    
     if datetime.utcnow().timestamp() > integration.data["token_expires_at"]:
         async with httpx.AsyncClient() as client:
             token_response = await client.post(
                 QUICKBOOKS_TOKEN_URL,
                 data={
                     "grant_type": "refresh_token",
-                    "refresh_token": integration.data["refresh_token"]
+                    "refresh_token": refresh_token
                 },
                 auth=(settings.QUICKBOOKS_CLIENT_ID, settings.QUICKBOOKS_CLIENT_SECRET),
                 headers={"Accept": "application/json"}
@@ -251,20 +255,22 @@ async def get_quickbooks_client(user_id: str):
             raise HTTPException(status_code=401, detail="QuickBooks token expired, please reconnect")
         
         tokens = token_response.json()
+        
+        # FIXED: Encrypt new tokens before storage
         supabase.table("user_integrations") \
             .update({
-                "access_token": tokens["access_token"],
-                "refresh_token": tokens.get("refresh_token", integration.data["refresh_token"]),
+                "access_token": encryption_service.encrypt(tokens["access_token"]),
+                "refresh_token": encryption_service.encrypt(tokens.get("refresh_token", refresh_token)),
                 "token_expires_at": datetime.utcnow().timestamp() + tokens.get("expires_in", 3600)
             }) \
             .eq("user_id", user_id) \
             .eq("integration_type", "quickbooks") \
             .execute()
         
-        integration.data["access_token"] = tokens["access_token"]
+        access_token = tokens["access_token"]
     
     return {
-        "access_token": integration.data["access_token"],
+        "access_token": access_token,
         "realm_id": integration.data["realm_id"],
         "base_url": QUICKBOOKS_API_BASE
     }
@@ -275,11 +281,11 @@ async def get_quickbooks_client(user_id: str):
 # =============================================================================
 
 @router.get("/gmail/connect")
-async def gmail_connect(user=Depends(get_current_user)):
+async def gmail_connect(user: CurrentUser = Depends(get_current_user)):
     """Initiate Gmail OAuth flow"""
     state = secrets.token_urlsafe(32)
     
-    supabase = get_supabase()
+    supabase = get_supabase_user(user.token)  # FIXED: Use user-scoped client
     supabase.table("oauth_states").insert({
         "state": state,
         "user_id": user.id,
@@ -305,7 +311,7 @@ async def gmail_connect(user=Depends(get_current_user)):
 @router.get("/gmail/callback")
 async def gmail_callback(code: str, state: str):
     """Handle Gmail OAuth callback"""
-    supabase = get_supabase()
+    supabase = get_supabase()  # Admin needed for callback
     
     state_record = supabase.table("oauth_states") \
         .select("*") \
@@ -320,7 +326,6 @@ async def gmail_callback(code: str, state: str):
     
     supabase.table("oauth_states").delete().eq("state", state).execute()
     
-    # Exchange code for tokens
     async with httpx.AsyncClient() as client:
         token_response = await client.post(
             GOOGLE_TOKEN_URL,
@@ -339,7 +344,6 @@ async def gmail_callback(code: str, state: str):
     
     tokens = token_response.json()
     
-    # Get user info
     async with httpx.AsyncClient() as client:
         userinfo_response = await client.get(
             GOOGLE_USERINFO_URL,
@@ -351,19 +355,19 @@ async def gmail_callback(code: str, state: str):
         userinfo = userinfo_response.json()
         account_email = userinfo.get("email")
     
-    # Check for existing integration
     existing = supabase.table("user_integrations") \
         .select("*") \
         .eq("user_id", user_id) \
         .eq("integration_type", "gmail") \
         .execute()
     
+    # FIXED: Encrypt tokens before storage
     integration_data = {
         "user_id": user_id,
         "integration_type": "gmail",
         "status": "active",
-        "access_token": tokens["access_token"],
-        "refresh_token": tokens.get("refresh_token"),
+        "access_token": encryption_service.encrypt(tokens["access_token"]),
+        "refresh_token": encryption_service.encrypt(tokens.get("refresh_token")),
         "token_expires_at": datetime.utcnow().timestamp() + tokens.get("expires_in", 3600),
         "account_name": account_email,
         "connected_at": datetime.utcnow().isoformat()
@@ -382,13 +386,12 @@ async def gmail_callback(code: str, state: str):
 
 
 @router.delete("/gmail/disconnect")
-async def gmail_disconnect(user=Depends(get_current_user)):
+async def gmail_disconnect(user: CurrentUser = Depends(get_current_user)):
     """Disconnect Gmail integration"""
-    supabase = get_supabase()
+    supabase = get_supabase_user(user.token)  # FIXED: Use user-scoped client
     
     supabase.table("user_integrations") \
         .update({"status": "disconnected", "disconnected_at": datetime.utcnow().isoformat()}) \
-        .eq("user_id", user.id) \
         .eq("integration_type", "gmail") \
         .execute()
     
@@ -397,7 +400,7 @@ async def gmail_disconnect(user=Depends(get_current_user)):
 
 async def get_gmail_client(user_id: str):
     """Get an authenticated Gmail client for a user"""
-    supabase = get_supabase()
+    supabase = get_supabase()  # Admin needed for workers
     integration = supabase.table("user_integrations") \
         .select("*") \
         .eq("user_id", user_id) \
@@ -409,9 +412,12 @@ async def get_gmail_client(user_id: str):
     if not integration.data:
         raise HTTPException(status_code=400, detail="Gmail not connected")
     
-    # Check if token is expired
+    # FIXED: Decrypt tokens when reading
+    access_token = encryption_service.decrypt(integration.data["access_token"])
+    refresh_token = encryption_service.decrypt(integration.data.get("refresh_token"))
+    
     if datetime.utcnow().timestamp() > integration.data["token_expires_at"]:
-        if not integration.data.get("refresh_token"):
+        if not refresh_token:
             supabase.table("user_integrations") \
                 .update({"status": "expired"}) \
                 .eq("user_id", user_id) \
@@ -419,14 +425,13 @@ async def get_gmail_client(user_id: str):
                 .execute()
             raise HTTPException(status_code=401, detail="Gmail token expired, please reconnect")
         
-        # Refresh the token
         async with httpx.AsyncClient() as client:
             token_response = await client.post(
                 GOOGLE_TOKEN_URL,
                 data={
                     "client_id": settings.GOOGLE_CLIENT_ID,
                     "client_secret": settings.GOOGLE_CLIENT_SECRET,
-                    "refresh_token": integration.data["refresh_token"],
+                    "refresh_token": refresh_token,
                     "grant_type": "refresh_token"
                 },
                 headers={"Content-Type": "application/x-www-form-urlencoded"}
@@ -441,19 +446,21 @@ async def get_gmail_client(user_id: str):
             raise HTTPException(status_code=401, detail="Gmail token expired, please reconnect")
         
         tokens = token_response.json()
+        
+        # FIXED: Encrypt new token before storage
         supabase.table("user_integrations") \
             .update({
-                "access_token": tokens["access_token"],
+                "access_token": encryption_service.encrypt(tokens["access_token"]),
                 "token_expires_at": datetime.utcnow().timestamp() + tokens.get("expires_in", 3600)
             }) \
             .eq("user_id", user_id) \
             .eq("integration_type", "gmail") \
             .execute()
         
-        integration.data["access_token"] = tokens["access_token"]
+        access_token = tokens["access_token"]
     
     return {
-        "access_token": integration.data["access_token"]
+        "access_token": access_token
     }
 
 
@@ -462,11 +469,11 @@ async def get_gmail_client(user_id: str):
 # =============================================================================
 
 @router.get("/google_calendar/connect")
-async def google_calendar_connect(user=Depends(get_current_user)):
+async def google_calendar_connect(user: CurrentUser = Depends(get_current_user)):
     """Initiate Google Calendar OAuth flow"""
     state = secrets.token_urlsafe(32)
     
-    supabase = get_supabase()
+    supabase = get_supabase_user(user.token)  # FIXED: Use user-scoped client
     supabase.table("oauth_states").insert({
         "state": state,
         "user_id": user.id,
@@ -492,7 +499,7 @@ async def google_calendar_connect(user=Depends(get_current_user)):
 @router.get("/google_calendar/callback")
 async def google_calendar_callback(code: str, state: str):
     """Handle Google Calendar OAuth callback"""
-    supabase = get_supabase()
+    supabase = get_supabase()  # Admin needed for callback
     
     state_record = supabase.table("oauth_states") \
         .select("*") \
@@ -507,7 +514,6 @@ async def google_calendar_callback(code: str, state: str):
     
     supabase.table("oauth_states").delete().eq("state", state).execute()
     
-    # Exchange code for tokens
     async with httpx.AsyncClient() as client:
         token_response = await client.post(
             GOOGLE_TOKEN_URL,
@@ -526,7 +532,6 @@ async def google_calendar_callback(code: str, state: str):
     
     tokens = token_response.json()
     
-    # Get user info
     async with httpx.AsyncClient() as client:
         userinfo_response = await client.get(
             GOOGLE_USERINFO_URL,
@@ -538,19 +543,19 @@ async def google_calendar_callback(code: str, state: str):
         userinfo = userinfo_response.json()
         account_email = userinfo.get("email")
     
-    # Check for existing integration
     existing = supabase.table("user_integrations") \
         .select("*") \
         .eq("user_id", user_id) \
         .eq("integration_type", "google_calendar") \
         .execute()
     
+    # FIXED: Encrypt tokens before storage
     integration_data = {
         "user_id": user_id,
         "integration_type": "google_calendar",
         "status": "active",
-        "access_token": tokens["access_token"],
-        "refresh_token": tokens.get("refresh_token"),
+        "access_token": encryption_service.encrypt(tokens["access_token"]),
+        "refresh_token": encryption_service.encrypt(tokens.get("refresh_token")),
         "token_expires_at": datetime.utcnow().timestamp() + tokens.get("expires_in", 3600),
         "account_name": account_email,
         "connected_at": datetime.utcnow().isoformat()
@@ -569,13 +574,12 @@ async def google_calendar_callback(code: str, state: str):
 
 
 @router.delete("/google_calendar/disconnect")
-async def google_calendar_disconnect(user=Depends(get_current_user)):
+async def google_calendar_disconnect(user: CurrentUser = Depends(get_current_user)):
     """Disconnect Google Calendar integration"""
-    supabase = get_supabase()
+    supabase = get_supabase_user(user.token)  # FIXED: Use user-scoped client
     
     supabase.table("user_integrations") \
         .update({"status": "disconnected", "disconnected_at": datetime.utcnow().isoformat()}) \
-        .eq("user_id", user.id) \
         .eq("integration_type", "google_calendar") \
         .execute()
     
@@ -584,7 +588,7 @@ async def google_calendar_disconnect(user=Depends(get_current_user)):
 
 async def get_google_calendar_client(user_id: str):
     """Get an authenticated Google Calendar client for a user"""
-    supabase = get_supabase()
+    supabase = get_supabase()  # Admin needed for workers
     integration = supabase.table("user_integrations") \
         .select("*") \
         .eq("user_id", user_id) \
@@ -596,9 +600,12 @@ async def get_google_calendar_client(user_id: str):
     if not integration.data:
         raise HTTPException(status_code=400, detail="Google Calendar not connected")
     
-    # Check if token is expired
+    # FIXED: Decrypt tokens when reading
+    access_token = encryption_service.decrypt(integration.data["access_token"])
+    refresh_token = encryption_service.decrypt(integration.data.get("refresh_token"))
+    
     if datetime.utcnow().timestamp() > integration.data["token_expires_at"]:
-        if not integration.data.get("refresh_token"):
+        if not refresh_token:
             supabase.table("user_integrations") \
                 .update({"status": "expired"}) \
                 .eq("user_id", user_id) \
@@ -606,14 +613,13 @@ async def get_google_calendar_client(user_id: str):
                 .execute()
             raise HTTPException(status_code=401, detail="Google Calendar token expired, please reconnect")
         
-        # Refresh the token
         async with httpx.AsyncClient() as client:
             token_response = await client.post(
                 GOOGLE_TOKEN_URL,
                 data={
                     "client_id": settings.GOOGLE_CLIENT_ID,
                     "client_secret": settings.GOOGLE_CLIENT_SECRET,
-                    "refresh_token": integration.data["refresh_token"],
+                    "refresh_token": refresh_token,
                     "grant_type": "refresh_token"
                 },
                 headers={"Content-Type": "application/x-www-form-urlencoded"}
@@ -628,30 +634,30 @@ async def get_google_calendar_client(user_id: str):
             raise HTTPException(status_code=401, detail="Google Calendar token expired, please reconnect")
         
         tokens = token_response.json()
+        
+        # FIXED: Encrypt new token before storage
         supabase.table("user_integrations") \
             .update({
-                "access_token": tokens["access_token"],
+                "access_token": encryption_service.encrypt(tokens["access_token"]),
                 "token_expires_at": datetime.utcnow().timestamp() + tokens.get("expires_in", 3600)
             }) \
             .eq("user_id", user_id) \
             .eq("integration_type", "google_calendar") \
             .execute()
         
-        integration.data["access_token"] = tokens["access_token"]
+        access_token = tokens["access_token"]
     
     return {
-        "access_token": integration.data["access_token"]
+        "access_token": access_token
     }
+
+
 # =============================================================================
 # ZENDESK OAUTH (STUB - For CustomerCareAI)
 # =============================================================================
 
 async def get_zendesk_client(user_id: str) -> Dict[str, str]:
-    """Get authenticated Zendesk client info for a user
-    
-    Returns dict with: access_token, subdomain
-    Currently returns mock data - implement full OAuth when ready
-    """
+    """Get authenticated Zendesk client info for a user"""
     supabase = get_supabase()
     integration = supabase.table("user_integrations") \
         .select("*") \
@@ -662,14 +668,13 @@ async def get_zendesk_client(user_id: str) -> Dict[str, str]:
         .execute()
     
     if not integration.data:
-        # Return mock data for development
         return {
             "access_token": "mock_zendesk_token",
             "subdomain": "mock-company"
         }
     
     return {
-        "access_token": integration.data.get("access_token", ""),
+        "access_token": encryption_service.decrypt(integration.data.get("access_token", "")),
         "subdomain": integration.data.get("subdomain", "")
     }
 
@@ -679,11 +684,7 @@ async def get_zendesk_client(user_id: str) -> Dict[str, str]:
 # =============================================================================
 
 async def get_meta_client(user_id: str) -> Dict[str, str]:
-    """Get authenticated Meta (Facebook/Instagram) client info for a user
-    
-    Returns dict with: access_token, page_id
-    Currently returns mock data - implement full OAuth when ready
-    """
+    """Get authenticated Meta (Facebook/Instagram) client info for a user"""
     supabase = get_supabase()
     integration = supabase.table("user_integrations") \
         .select("*") \
@@ -694,13 +695,12 @@ async def get_meta_client(user_id: str) -> Dict[str, str]:
         .execute()
     
     if not integration.data:
-        # Return mock data for development
         return {
             "access_token": "mock_meta_token",
             "page_id": "mock_page_123"
         }
     
     return {
-        "access_token": integration.data.get("access_token", ""),
+        "access_token": encryption_service.decrypt(integration.data.get("access_token", "")),
         "page_id": integration.data.get("page_id", "")
     }
