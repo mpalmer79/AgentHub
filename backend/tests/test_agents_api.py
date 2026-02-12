@@ -13,7 +13,7 @@ from fastapi.testclient import TestClient
 from app.main import app
 from app.agents.registry import AgentType, AGENT_REGISTRY
 from app.core.auth import CurrentUser
-from tests.conftest import FakeSupabaseClient
+from conftest import FakeSupabaseClient
 
 
 class TestAgentCatalog:
