@@ -12,7 +12,7 @@ from unittest.mock import MagicMock, AsyncMock, patch
 
 from app.agents.runtime import AgentRuntime
 from app.agents.registry import AgentType
-from tests.conftest import (
+from conftest import (
     FakeClaudeResponse, FakeTextBlock, FakeToolUseBlock,
     FakeAnthropicClient, FakeSupabaseClient
 )
