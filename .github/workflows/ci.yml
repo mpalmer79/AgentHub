@@ -160,7 +160,8 @@ jobs:
         run: ruff check . --output-format=github --ignore=F401,F541,F841,W293,UP006,UP035,UP045,I001,UP017,UP042,ARG002,SIM102,SIM114,SIM118,SIM210,C401,B905,W291
 
       - name: Run Ruff formatter check
-        run: ruff format --check . || true
+        run: ruff format --check .
+        continue-on-error: true  # FIXED: Soft fail for formatting only
 
   backend-typecheck:
     name: Backend Type Check
@@ -184,7 +185,8 @@ jobs:
           pip install mypy types-passlib types-python-jose
 
       - name: Run mypy
-        run: mypy app --ignore-missing-imports --no-error-summary || true
+        run: mypy app --ignore-missing-imports --no-error-summary
+        continue-on-error: true  # FIXED: Soft fail for type checking (gradual adoption)
 
   backend-test:
     name: Backend Tests
@@ -209,14 +211,13 @@ jobs:
           pip install pytest-cov
 
       - name: Run tests with coverage
-        run: |
-          pytest --cov=app --cov-report=term-missing || true
+        run: pytest --cov=app --cov-report=term-missing  # FIXED: Removed || true
         env:
           SUPABASE_URL: https://placeholder.supabase.co
-          SUPABASE_SERVICE_KEY: placeholder-service-key-for-ci
+          SUPABASE_SERVICE_ROLE_KEY: placeholder-service-key-for-ci  # FIXED: Matches config.py
+          SUPABASE_ANON_KEY: placeholder-anon-key-for-ci
           ANTHROPIC_API_KEY: sk-ant-placeholder-for-ci
-          JWT_SECRET: ci-test-jwt-secret-key-32chars!
-          ENCRYPTION_KEY: ci-test-encryption-key-32bytes!
+          INTEGRATION_ENCRYPTION_KEY: ci-test-encryption-key-32bytes!
 
   # ============================================
   # SECURITY SCANNING
@@ -238,7 +239,8 @@ jobs:
       - name: Check Python dependencies for vulnerabilities
         run: |
           cd backend
-          pip-audit -r requirements.txt || true
+          pip-audit -r requirements.txt
+        continue-on-error: true  # FIXED: Soft fail - report but don't block
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -248,7 +250,8 @@ jobs:
       - name: Check npm dependencies for vulnerabilities
         run: |
           cd frontend
-          npm audit --audit-level=high || true
+          npm audit --audit-level=high
+        continue-on-error: true  # FIXED: Soft fail - report but don't block
 
   # ============================================
   # QUALITY GATE
@@ -290,3 +293,9 @@ jobs:
           
           echo ""
           echo "**Quality gate complete**" >> $GITHUB_STEP_SUMMARY
+
+      - name: Fail if critical jobs failed
+        if: needs.frontend-build.result == 'failure' || needs.frontend-test.result == 'failure' || needs.backend-test.result == 'failure'
+        run: |
+          echo "❌ Quality gate failed - critical jobs did not pass"
+          exit 1
