@@ -43,12 +43,13 @@ describe('HomePage', () => {
         render(<HomePage />)
       })
       
-      // Multiple "Start Free Trial" and "View All Agents" links exist
+      // Multiple "Start Free Trial" links exist
       const trialLinks = screen.getAllByRole('link', { name: /Start Free Trial/i })
       expect(trialLinks.length).toBeGreaterThan(0)
       
-      const viewAgentsLinks = screen.getAllByRole('link', { name: /View All Agents/i })
-      expect(viewAgentsLinks.length).toBeGreaterThan(0)
+      // Hero has "Explore Agents" button
+      const exploreLinks = screen.getAllByText(/Explore Agents/i)
+      expect(exploreLinks.length).toBeGreaterThan(0)
     })
 
     it('should have signup link in hero CTA', async () => {
@@ -99,6 +100,35 @@ describe('HomePage', () => {
     })
   })
 
+  describe('Pricing Section', () => {
+    it('should display pricing plans', async () => {
+      await act(async () => {
+        render(<HomePage />)
+      })
+      
+      expect(screen.getByText('Starter')).toBeInTheDocument()
+      expect(screen.getByText('Professional')).toBeInTheDocument()
+      expect(screen.getByText('Enterprise')).toBeInTheDocument()
+    })
+
+    it('should display setup fee information', async () => {
+      await act(async () => {
+        render(<HomePage />)
+      })
+      
+      expect(screen.getByText('One-Time Setup Fee')).toBeInTheDocument()
+    })
+
+    it('should display billing toggle', async () => {
+      await act(async () => {
+        render(<HomePage />)
+      })
+      
+      expect(screen.getByText('Monthly')).toBeInTheDocument()
+      expect(screen.getByText(/Annual/i)).toBeInTheDocument()
+    })
+  })
+
   describe('Agents Section', () => {
     it('should display all 12 agents', async () => {
       await act(async () => {
@@ -133,7 +163,7 @@ describe('HomePage', () => {
         render(<HomePage />)
       })
       
-      // Prices are displayed as separate "$199" and "/month" elements
+      // Prices are displayed as separate "$319" etc and "/month" elements
       const prices = screen.getAllByText(/\$\d+/)
       expect(prices.length).toBeGreaterThan(0)
     })
@@ -197,6 +227,15 @@ describe('HomePage', () => {
       const loginLink = screen.getByRole('link', { name: /Sign In/i })
       expect(loginLink).toHaveAttribute('href', '/login')
     })
+
+    it('should have pricing nav link', async () => {
+      await act(async () => {
+        render(<HomePage />)
+      })
+      
+      const pricingLinks = screen.getAllByRole('link', { name: /Pricing/i })
+      expect(pricingLinks.length).toBeGreaterThan(0)
+    })
   })
 
   describe('Footer', () => {
@@ -205,7 +244,7 @@ describe('HomePage', () => {
         render(<HomePage />)
       })
       
-      expect(screen.getByText(/© 2026 AgentHub/i)).toBeInTheDocument()
+      expect(screen.getByText(/2026 AgentHub/i)).toBeInTheDocument()
     })
 
     it('should display footer links', async () => {
