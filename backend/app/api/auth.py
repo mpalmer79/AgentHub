@@ -92,14 +92,17 @@ async def sign_out(user = Depends(get_current_user)):
 
 @router.get("/me")
 async def get_me(user = Depends(get_current_user)):
-    supabase = get_supabase()
+    """Get current user profile. Uses user-scoped DB access."""
+    supabase = get_supabase(user.token)  # FIXED: Pass user token for RLS
     result = supabase.table("users").select("*").eq("id", user.id).single().execute()
     
     if result.data:
         return result.data
+    
+    # FIXED: Fallback uses fields from CurrentUser (no user_metadata)
     return {
         "id": user.id,
         "email": user.email,
-        "full_name": user.user_metadata.get("full_name"),
-        "company_name": user.user_metadata.get("company_name")
+        "full_name": None,
+        "company_name": None
     }
