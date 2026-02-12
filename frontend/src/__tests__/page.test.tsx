@@ -4,9 +4,9 @@
  */
 
 import { render, screen, act } from '@testing-library/react'
-import HomePage from '@/app/page'
+import Home from '@/app/page'
 
-// Mock router
+// Mock next/navigation
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: jest.fn(),
@@ -18,43 +18,50 @@ jest.mock('next/navigation', () => ({
   useSearchParams: () => new URLSearchParams(),
 }))
 
-describe('HomePage', () => {
+// Mock next/image
+jest.mock('next/image', () => ({
+  __esModule: true,
+  default: (props: React.ImgHTMLAttributes<HTMLImageElement> & { fill?: boolean }) => {
+    const { fill, ...rest } = props
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img {...rest} alt={rest.alt || ''} />
+  },
+}))
+
+describe('Home Page', () => {
   describe('Hero Section', () => {
     it('should render the main headline', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
-      // Multiple elements contain "Autonomous AI", so use getAllBy
-      const elements = screen.getAllByText(/Autonomous AI/i)
-      expect(elements.length).toBeGreaterThan(0)
+      expect(screen.getByText(/AI Agents That Work/i)).toBeInTheDocument()
+      expect(screen.getByText(/While You Sleep/i)).toBeInTheDocument()
     })
 
     it('should render the value proposition', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
-      expect(screen.getByText(/Deploy intelligent agents that handle your bookkeeping/i)).toBeInTheDocument()
+      // Text is split across elements, check for key phrases
+      expect(screen.getByText(/Deploy autonomous AI agents/i)).toBeInTheDocument()
     })
 
     it('should render CTA buttons', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
-      // Multiple "Start Free Trial" links exist
       const trialLinks = screen.getAllByRole('link', { name: /Start Free Trial/i })
       expect(trialLinks.length).toBeGreaterThan(0)
       
-      // Hero has "Explore Agents" button
-      const exploreLinks = screen.getAllByText(/Explore Agents/i)
-      expect(exploreLinks.length).toBeGreaterThan(0)
+      expect(screen.getByText(/Explore Agents/i)).toBeInTheDocument()
     })
 
     it('should have signup link in hero CTA', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
       const startTrialLinks = screen.getAllByRole('link', { name: /Start Free Trial/i })
@@ -65,7 +72,7 @@ describe('HomePage', () => {
   describe('Metrics Section', () => {
     it('should display tasks automated metric', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
       expect(screen.getByText('10,000+')).toBeInTheDocument()
@@ -74,7 +81,7 @@ describe('HomePage', () => {
 
     it('should display businesses served metric', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
       expect(screen.getByText('500+')).toBeInTheDocument()
@@ -83,7 +90,7 @@ describe('HomePage', () => {
 
     it('should display uptime metric', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
       expect(screen.getByText('99.9%')).toBeInTheDocument()
@@ -92,7 +99,7 @@ describe('HomePage', () => {
 
     it('should display 24/7 operation metric', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
       expect(screen.getByText('24/7')).toBeInTheDocument()
@@ -103,7 +110,7 @@ describe('HomePage', () => {
   describe('Pricing Section', () => {
     it('should display pricing plans', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
       expect(screen.getByText('Starter')).toBeInTheDocument()
@@ -113,26 +120,28 @@ describe('HomePage', () => {
 
     it('should display setup fee information', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
-      expect(screen.getByText('One-Time Setup Fee')).toBeInTheDocument()
+      expect(screen.getByText(/\$750/)).toBeInTheDocument()
+      expect(screen.getByText(/\$1,500/)).toBeInTheDocument()
     })
 
-    it('should display billing toggle', async () => {
+    it('should display package prices', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
-      expect(screen.getByText('Monthly')).toBeInTheDocument()
-      expect(screen.getByText(/Annual/i)).toBeInTheDocument()
+      expect(screen.getByText('$399')).toBeInTheDocument()
+      expect(screen.getByText('$499')).toBeInTheDocument()
+      expect(screen.getByText('$799')).toBeInTheDocument()
     })
   })
 
   describe('Agents Section', () => {
     it('should display all 12 agents', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
       expect(screen.getByText('BookkeeperAI')).toBeInTheDocument()
@@ -151,7 +160,7 @@ describe('HomePage', () => {
 
     it('should display agent descriptions', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
       expect(screen.getByText(/Autonomous financial operations/i)).toBeInTheDocument()
@@ -160,17 +169,16 @@ describe('HomePage', () => {
 
     it('should display agent prices', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
-      // Prices are displayed as separate "$319" etc and "/month" elements
       const prices = screen.getAllByText(/\$\d+/)
       expect(prices.length).toBeGreaterThan(0)
     })
 
     it('should display agent categories', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
       expect(screen.getAllByText('Finance').length).toBeGreaterThan(0)
@@ -180,28 +188,41 @@ describe('HomePage', () => {
   })
 
   describe('How It Works Section', () => {
-    it('should display how it works nav link', async () => {
+    it('should display how it works steps', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
-      expect(screen.getAllByText(/How It Works/i).length).toBeGreaterThan(0)
+      expect(screen.getByText('Connect Your Tools')).toBeInTheDocument()
+      expect(screen.getByText('Deploy Your Agents')).toBeInTheDocument()
+      expect(screen.getByText('Watch Them Work')).toBeInTheDocument()
+    })
+
+    it('should display step numbers', async () => {
+      await act(async () => {
+        render(<Home />)
+      })
+      
+      expect(screen.getByText('01')).toBeInTheDocument()
+      expect(screen.getByText('02')).toBeInTheDocument()
+      expect(screen.getByText('03')).toBeInTheDocument()
     })
   })
 
   describe('Testimonials Section', () => {
     it('should display testimonials', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
       expect(screen.getByText(/Michael Torres/i)).toBeInTheDocument()
       expect(screen.getByText(/Sarah Chen/i)).toBeInTheDocument()
+      expect(screen.getByText(/David Park/i)).toBeInTheDocument()
     })
 
     it('should display testimonial quotes', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
       expect(screen.getByText(/saved us 20\+ hours per week/i)).toBeInTheDocument()
@@ -212,36 +233,38 @@ describe('HomePage', () => {
   describe('Navigation', () => {
     it('should display AgentHub logo', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
       const brandElements = screen.getAllByText('AgentHub')
       expect(brandElements.length).toBeGreaterThan(0)
     })
 
-    it('should have sign in link pointing to /login', async () => {
+    it('should have admin login link pointing to /login', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
-      const loginLink = screen.getByRole('link', { name: /Sign In/i })
+      const loginLink = screen.getByRole('link', { name: /Admin Login/i })
       expect(loginLink).toHaveAttribute('href', '/login')
     })
 
-    it('should have pricing nav link', async () => {
+    it('should have navigation links', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
-      const pricingLinks = screen.getAllByRole('link', { name: /Pricing/i })
-      expect(pricingLinks.length).toBeGreaterThan(0)
+      expect(screen.getByText('Agents')).toBeInTheDocument()
+      expect(screen.getByText('Pricing')).toBeInTheDocument()
+      expect(screen.getByText('How It Works')).toBeInTheDocument()
+      expect(screen.getByText('Testimonials')).toBeInTheDocument()
     })
   })
 
   describe('Footer', () => {
     it('should display copyright', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
       expect(screen.getByText(/2026 AgentHub/i)).toBeInTheDocument()
@@ -249,22 +272,62 @@ describe('HomePage', () => {
 
     it('should display footer links', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
       expect(screen.getByText('Privacy Policy')).toBeInTheDocument()
       expect(screen.getByText('Terms of Service')).toBeInTheDocument()
+      expect(screen.getByText('Security')).toBeInTheDocument()
+    })
+
+    it('should display product links', async () => {
+      await act(async () => {
+        render(<Home />)
+      })
+      
+      expect(screen.getByText('All Agents')).toBeInTheDocument()
+      expect(screen.getByText('Integrations')).toBeInTheDocument()
+    })
+  })
+
+  describe('CTA Section', () => {
+    it('should display CTA headline', async () => {
+      await act(async () => {
+        render(<Home />)
+      })
+      
+      expect(screen.getByText(/Ready to Transform Your Operations/i)).toBeInTheDocument()
+    })
+
+    it('should have View All Agents link', async () => {
+      await act(async () => {
+        render(<Home />)
+      })
+      
+      const viewAgentsLinks = screen.getAllByText(/View All Agents/i)
+      expect(viewAgentsLinks.length).toBeGreaterThan(0)
     })
   })
 
   describe('Accessibility', () => {
     it('should have proper heading hierarchy', async () => {
       await act(async () => {
-        render(<HomePage />)
+        render(<Home />)
       })
       
       const h1 = document.querySelector('h1')
       expect(h1).toBeInTheDocument()
+    })
+
+    it('should have alt text on images', async () => {
+      await act(async () => {
+        render(<Home />)
+      })
+      
+      const images = document.querySelectorAll('img')
+      images.forEach(img => {
+        expect(img).toHaveAttribute('alt')
+      })
     })
   })
 })
