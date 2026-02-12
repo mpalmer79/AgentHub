@@ -17,7 +17,7 @@ from app.workers.task_worker import (
     worker_id,
 )
 from app.agents.registry import AgentType
-from tests.conftest import FakeSupabaseClient
+from conftest import FakeSupabaseClient
 
 
 class TestWorkerIdentity:
