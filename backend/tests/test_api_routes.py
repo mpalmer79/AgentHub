@@ -1,9 +1,12 @@
+"""Tests for API route existence."""
 import pytest
 
-@pytest.mark.parametrize("path", [
-    "/api",
-    "/api/agents",
-])
-def test_api_routes_exist(client, path):
-    response = client.get(path)
-    assert response.status_code != 500
+
+def test_api_routes_exist_api(client):
+    response = client.get("/api")
+    assert response.status_code in [200, 404, 307]
+
+
+def test_api_routes_exist_agents(client):
+    response = client.get("/api/agents/catalog")
+    assert response.status_code == 200
