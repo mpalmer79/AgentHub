@@ -69,18 +69,18 @@ class TestAgentTypes:
 
     def test_registry_has_required_fields(self):
         required_fields = ["name", "description", "price_monthly", "features", "integrations", "category"]
-        for agent_type, info in AGENT_REGISTRY.items():
+        for _, info in AGENT_REGISTRY.items():
             for field in required_fields:
                 assert field in info
 
     def test_prices_are_positive(self):
-        for agent_type, info in AGENT_REGISTRY.items():
+        for _, info in AGENT_REGISTRY.items():
             assert info["price_monthly"] >= 0
 
     def test_features_is_list(self):
-        for agent_type, info in AGENT_REGISTRY.items():
+        for _, info in AGENT_REGISTRY.items():
             assert isinstance(info["features"], list)
 
     def test_integrations_is_list(self):
-        for agent_type, info in AGENT_REGISTRY.items():
+        for _, info in AGENT_REGISTRY.items():
             assert isinstance(info["integrations"], list)
