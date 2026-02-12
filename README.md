@@ -21,7 +21,7 @@
 
 ---
 
-## 💡 What if you could hire 12 specialists tomorrow — without the salaries?
+## 💡 What if you could hire 12 specialists tomorrow — without the salaries? 
 
 AgentHub deploys **autonomous AI agents** that work 24/7 on the tasks eating up your team's time.
 
