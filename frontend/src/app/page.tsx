@@ -134,6 +134,54 @@ const agents = [
   },
 ]
 
+const pricingPlans = [
+  {
+    name: 'Starter',
+    price: 399,
+    agents: 3,
+    description: 'Perfect for small businesses getting started with automation',
+    features: [
+      'Choose any 3 AI agents',
+      'Standard integrations',
+      'Email support',
+      'Monthly usage reports',
+      'API access'
+    ],
+    popular: false
+  },
+  {
+    name: 'Professional',
+    price: 499,
+    agents: 6,
+    description: 'For growing businesses ready to scale operations',
+    features: [
+      'Choose any 6 AI agents',
+      'Premium integrations',
+      'Priority support',
+      'Weekly usage reports',
+      'API access',
+      'Custom workflows'
+    ],
+    popular: true
+  },
+  {
+    name: 'Enterprise',
+    price: 799,
+    agents: 12,
+    description: 'Full power for businesses that demand the best',
+    features: [
+      'All 12 AI agents included',
+      'All integrations',
+      'Dedicated support',
+      'Real-time analytics',
+      'API access',
+      'Custom workflows',
+      'White-glove onboarding'
+    ],
+    popular: false
+  }
+]
+
 const testimonials = [
   {
     quote: "AgentHub's BookkeeperAI saved us 20+ hours per week on financial operations. It's like having a tireless accountant on staff.",
@@ -171,50 +219,46 @@ const howItWorks = [
   },
   {
     step: '03',
-    title: 'Review & Approve',
-    description: 'Agents work autonomously but you stay in control. Approve actions when needed.'
+    title: 'Watch Them Work',
+    description: 'Your agents operate 24/7, handling tasks autonomously while you focus on growth.'
   },
 ]
 
-export default function HomePage() {
-  const [scrolled, setScrolled] = useState(false)
-  const [activeCategory, setActiveCategory] = useState('All')
+export default function Home() {
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [billingAnnual, setBillingAnnual] = useState(true)
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50)
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10)
+    }
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const categories = ['All', ...new Set(agents.map(a => a.category))]
-  const filteredAgents = activeCategory === 'All' 
-    ? agents 
-    : agents.filter(a => a.category === activeCategory)
-
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-white/90 backdrop-blur-xl shadow-sm' : 'bg-transparent'
-      }`}>
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm' : 'bg-transparent'}`}>
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
+          <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center gap-3">
               <div className="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">A</span>
               </div>
-              <span className="text-xl font-semibold tracking-tight">AgentHub</span>
+              <span className="text-xl font-semibold">AgentHub</span>
             </Link>
             
-            <div className="hidden md:flex items-center gap-10">
-              <a href="#solutions" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition">Solutions</a>
-              <a href="#how-it-works" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition">How It Works</a>
-              <a href="#testimonials" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition">Testimonials</a>
+            <div className="hidden md:flex items-center gap-8">
+              <a href="#solutions" className="text-sm text-slate-600 hover:text-slate-900 transition">Agents</a>
+              <a href="#pricing" className="text-sm text-slate-600 hover:text-slate-900 transition">Pricing</a>
+              <a href="#how-it-works" className="text-sm text-slate-600 hover:text-slate-900 transition">How It Works</a>
+              <a href="#testimonials" className="text-sm text-slate-600 hover:text-slate-900 transition">Testimonials</a>
             </div>
             
             <div className="flex items-center gap-4">
               <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition">
-                Sign In
+                Admin Login
               </Link>
               <Link href="/signup" className="btn-primary text-sm">
                 Get Started
@@ -225,135 +269,69 @@ export default function HomePage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-24 lg:pt-40 lg:pb-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-50 to-white" />
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-50/50 to-transparent" />
-        
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="opacity-0 animate-fade-in-up">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-full mb-8">
-                <span className="w-2 h-2 bg-emerald-500 rounded-full status-pulse" />
-                <span className="text-sm font-medium text-slate-700">Now accepting beta users</span>
-              </div>
-              
-              <h1 className="text-display font-bold text-slate-900 mb-6">
-                Autonomous AI<br />
-                <span className="gradient-text-accent">for Modern Business</span>
-              </h1>
-              
-              <p className="text-subheadline text-slate-600 mb-10 max-w-lg">
-                Deploy intelligent agents that handle your bookkeeping, email, hiring, and customer support—autonomously.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/signup" className="btn-primary inline-flex items-center justify-center gap-2">
-                  Start Free Trial
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </Link>
-                <a href="#solutions" className="btn-secondary inline-flex items-center justify-center gap-2">
-                  View All Agents
-                </a>
-              </div>
-            </div>
-            
-            <div className="relative opacity-0 animate-fade-in-up animate-delay-200">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-                <Image
-                  src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=1200&q=80"
-                  alt="Team collaborating with AI"
-                  width={600}
-                  height={400}
-                  className="w-full object-cover"
-                  priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
-                
-                {/* Floating metrics card */}
-                <div className="absolute bottom-6 left-6 right-6 glass rounded-xl p-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                      <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-slate-900">247 tasks completed today</p>
-                      <p className="text-xs text-slate-600">Across all active agents</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Decorative elements */}
-              <div className="absolute -top-4 -right-4 w-24 h-24 bg-blue-100 rounded-full blur-3xl opacity-60" />
-              <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-purple-100 rounded-full blur-3xl opacity-60" />
+      <section className="pt-32 pb-20 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center max-w-4xl mx-auto">
+            <h1 className="text-display font-bold text-slate-900 mb-6 tracking-tight">
+              AI Agents That Work
+              <span className="bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent"> While You Sleep</span>
+            </h1>
+            <p className="text-xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed">
+              Deploy autonomous AI agents that handle your business operations 24/7. 
+              From bookkeeping to customer support, let AI do the heavy lifting.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/signup" className="btn-primary inline-flex items-center justify-center gap-2">
+                Start Free Trial
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+              <a href="#solutions" className="btn-secondary inline-flex items-center justify-center gap-2">
+                Explore Agents
+              </a>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Metrics Bar */}
-      <section className="py-12 bg-slate-900">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {/* Metrics */}
+          <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8">
             {metrics.map((metric, i) => (
               <div key={i} className="text-center">
-                <p className="text-3xl lg:text-4xl font-bold text-white mb-1">{metric.value}</p>
-                <p className="text-sm text-slate-400">{metric.label}</p>
+                <div className="text-3xl md:text-4xl font-bold text-slate-900 mb-1">{metric.value}</div>
+                <div className="text-sm text-slate-500">{metric.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Solutions / Agents Grid */}
+      {/* Agents Grid */}
       <section id="solutions" className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-headline font-bold text-slate-900 mb-4">
-              AI Agents for Every Business Function
+              Meet Your AI Workforce
             </h2>
             <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Choose from our library of purpose-built AI agents. Each is trained for its specific domain and integrates seamlessly with your existing tools.
+              Each agent is purpose-built for specific business functions, trained on industry best practices, and ready to deploy.
             </p>
           </div>
 
-          {/* Category Filter */}
-          <div className="flex flex-wrap justify-center gap-2 mb-12">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition ${
-                  activeCategory === cat
-                    ? 'bg-slate-900 text-white'
-                    : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          {/* Agents Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredAgents.map((agent, i) => (
-              <Link
-                key={agent.id}
-                href={`/${agent.id}`}
-                className="group bg-white rounded-2xl overflow-hidden shadow-soft card-hover border border-slate-100"
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {agents.map((agent, i) => (
+              <Link 
+                key={i} 
+                href={`/agents/${agent.id}`}
+                className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-200"
               >
                 <div className="relative h-48 overflow-hidden">
                   <Image
                     src={agent.image}
                     alt={agent.name}
                     fill
-                    className="object-cover group-hover:scale-105 transition duration-700"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
                   <div className="absolute top-4 left-4">
                     <span className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-medium text-slate-700">
                       {agent.category}
@@ -393,8 +371,97 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section id="pricing" className="py-24">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-headline font-bold text-slate-900 mb-4">
+              Simple, Transparent Pricing
+            </h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-8">
+              Choose the plan that fits your business. All plans include a one-time setup fee.
+            </p>
+            
+            {/* Billing Toggle */}
+            <div className="flex items-center justify-center gap-4">
+              <span className={`text-sm ${billingAnnual ? 'text-slate-900 font-medium' : 'text-slate-500'}`}>Annual</span>
+              <button
+                onClick={() => setBillingAnnual(!billingAnnual)}
+                className="relative w-14 h-7 bg-slate-200 rounded-full transition-colors"
+              >
+                <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-transform ${billingAnnual ? 'left-1' : 'left-8'}`} />
+              </button>
+              <span className={`text-sm ${!billingAnnual ? 'text-slate-900 font-medium' : 'text-slate-500'}`}>Monthly</span>
+            </div>
+            <p className="text-sm text-slate-500 mt-2">
+              Setup fee: <span className="font-semibold text-slate-700">${billingAnnual ? '750' : '1,500'}</span> {billingAnnual ? '(annual contract)' : '(month-to-month)'}
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {pricingPlans.map((plan, i) => (
+              <div 
+                key={i} 
+                className={`relative bg-white rounded-2xl p-8 border-2 transition-all ${
+                  plan.popular 
+                    ? 'border-blue-600 shadow-xl scale-105' 
+                    : 'border-slate-200 hover:border-slate-300'
+                }`}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                    <span className="bg-blue-600 text-white text-xs font-semibold px-4 py-1 rounded-full">
+                      Most Popular
+                    </span>
+                  </div>
+                )}
+                
+                <div className="text-center mb-6">
+                  <h3 className="text-xl font-bold text-slate-900 mb-2">{plan.name}</h3>
+                  <p className="text-sm text-slate-600 mb-4">{plan.description}</p>
+                  <div className="flex items-baseline justify-center gap-1">
+                    <span className="text-4xl font-bold text-slate-900">${plan.price}</span>
+                    <span className="text-slate-500">/month</span>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-1">Up to {plan.agents} agents</p>
+                </div>
+                
+                <ul className="space-y-3 mb-8">
+                  {plan.features.map((feature, j) => (
+                    <li key={j} className="flex items-start gap-3 text-sm text-slate-600">
+                      <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                
+                <Link 
+                  href="/signup" 
+                  className={`block w-full py-3 px-4 rounded-lg text-center font-medium transition ${
+                    plan.popular 
+                      ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                      : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
+                  }`}
+                >
+                  Get Started
+                </Link>
+              </div>
+            ))}
+          </div>
+          
+          <div className="text-center mt-12">
+            <p className="text-sm text-slate-500">
+              All plans require a one-time setup fee: <strong>$750</strong> for annual contracts or <strong>$1,500</strong> for monthly billing.
+              <br />Setup includes onboarding, configuration, and initial training.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* How It Works */}
-      <section id="how-it-works" className="py-24">
+      <section id="how-it-works" className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-headline font-bold text-slate-900 mb-4">
@@ -408,12 +475,12 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-8">
             {howItWorks.map((item, i) => (
               <div key={i} className="relative">
-                <div className="text-6xl font-bold text-slate-100 mb-4">{item.step}</div>
+                <div className="text-6xl font-bold text-slate-200 mb-4">{item.step}</div>
                 <h3 className="text-xl font-semibold text-slate-900 mb-3">{item.title}</h3>
                 <p className="text-slate-600">{item.description}</p>
                 
                 {i < howItWorks.length - 1 && (
-                  <div className="hidden md:block absolute top-10 right-0 w-1/2 h-px bg-slate-200" />
+                  <div className="hidden md:block absolute top-10 right-0 w-1/2 h-px bg-slate-300" />
                 )}
               </div>
             ))}
@@ -512,7 +579,7 @@ export default function HomePage() {
               <ul className="space-y-3 text-sm">
                 <li><a href="#solutions" className="text-slate-600 hover:text-slate-900 transition">All Agents</a></li>
                 <li><a href="#how-it-works" className="text-slate-600 hover:text-slate-900 transition">How It Works</a></li>
-                <li><a href="#" className="text-slate-600 hover:text-slate-900 transition">Pricing</a></li>
+                <li><a href="#pricing" className="text-slate-600 hover:text-slate-900 transition">Pricing</a></li>
                 <li><a href="#" className="text-slate-600 hover:text-slate-900 transition">Integrations</a></li>
               </ul>
             </div>
