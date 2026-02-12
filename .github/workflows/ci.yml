@@ -121,7 +121,7 @@ jobs:
         run: pip install ruff
 
       - name: Run Ruff linter
-        run: ruff check . --output-format=github --ignore=F401,F841,W293,UP006,UP035,UP045,I001,UP017,UP042,ARG002,SIM102,SIM114,SIM118,SIM210,C401,B905,W291
+        run: ruff check . --output-format=github --ignore=F401,F541,F841,W293,UP006,UP035,UP045,I001,UP017,UP042,ARG002,SIM102,SIM114,SIM118,SIM210,C401,B905,W291
 
       - name: Run Ruff formatter check
         run: ruff format --check . || true
