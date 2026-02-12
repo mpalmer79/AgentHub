@@ -27,7 +27,7 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
     AgentType.BOOKKEEPER: {
         "name": "BookkeeperAI",
         "description": "Automates bookkeeping tasks including transaction categorization, account reconciliation, anomaly detection, and financial reporting.",
-        "price_monthly": 199,
+        "price_monthly": 319,
         "category": "Finance",
         "features": [
             "Automatic transaction categorization",
@@ -52,7 +52,7 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
     AgentType.INBOX_COMMANDER: {
         "name": "InboxCommanderAI",
         "description": "Manages your email inbox by triaging messages, drafting responses, scheduling follow-ups, and extracting action items.",
-        "price_monthly": 99,
+        "price_monthly": 239,
         "category": "Productivity",
         "features": [
             "Smart email triage and prioritization",
@@ -76,7 +76,7 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
     AgentType.HIRE_WELL: {
         "name": "HireWellAI",
         "description": "Streamlines hiring by screening resumes, scheduling interviews, sending status updates, and managing candidate communications.",
-        "price_monthly": 299,
+        "price_monthly": 479,
         "category": "Human Resources",
         "features": [
             "Resume screening and ranking",
@@ -100,7 +100,7 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
     AgentType.CUSTOMER_CARE: {
         "name": "CustomerCareAI",
         "description": "Handles customer support by answering FAQs, resolving common issues, escalating complex cases, and tracking satisfaction.",
-        "price_monthly": 249,
+        "price_monthly": 399,
         "category": "Support",
         "features": [
             "24/7 automated support",
@@ -124,7 +124,7 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
     AgentType.SOCIAL_PILOT: {
         "name": "SocialPilotAI",
         "description": "Manages social media by creating posts, scheduling content, responding to comments, and reporting on engagement.",
-        "price_monthly": 149,
+        "price_monthly": 209,
         "category": "Marketing",
         "features": [
             "AI content generation",
@@ -148,7 +148,7 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
     AgentType.APPOINTMENT: {
         "name": "AppointmentAI",
         "description": "Handles scheduling by booking appointments, sending reminders, managing rescheduling, and reducing no-shows.",
-        "price_monthly": 99,
+        "price_monthly": 159,
         "category": "Productivity",
         "features": [
             "Natural language booking",
@@ -176,7 +176,7 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
     AgentType.COMPLIANCE_GUARD: {
         "name": "ComplianceGuardAI",
         "description": "Monitors regulations, tracks compliance deadlines, audits processes, and ensures your business stays compliant with all requirements.",
-        "price_monthly": 349,
+        "price_monthly": 559,
         "category": "Legal & Compliance",
         "features": [
             "Regulatory change monitoring",
@@ -201,7 +201,7 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
     AgentType.VENDOR_NEGOTIATOR: {
         "name": "VendorNegotiatorAI",
         "description": "Analyzes vendor contracts, benchmarks pricing, identifies savings opportunities, and automates renewal negotiations.",
-        "price_monthly": 199,
+        "price_monthly": 319,
         "category": "Procurement",
         "features": [
             "Contract inventory management",
@@ -226,7 +226,7 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
     AgentType.PROPOSAL_PRO: {
         "name": "ProposalProAI",
         "description": "Generates customized proposals, responds to RFPs, prices projects intelligently, and tracks deal progress to close.",
-        "price_monthly": 249,
+        "price_monthly": 399,
         "category": "Sales",
         "features": [
             "Custom proposal generation",
@@ -251,7 +251,7 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
     AgentType.INVENTORY_IQ: {
         "name": "InventoryIQAI",
         "description": "Forecasts demand, automates reordering, optimizes stock levels, and manages multi-location inventory intelligently.",
-        "price_monthly": 199,
+        "price_monthly": 369,
         "category": "Operations",
         "features": [
             "Demand forecasting",
@@ -276,7 +276,7 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
     AgentType.REPUTATION_SHIELD: {
         "name": "ReputationShieldAI",
         "description": "Monitors online reviews, drafts responses, requests reviews from happy customers, and tracks brand sentiment.",
-        "price_monthly": 179,
+        "price_monthly": 259,
         "category": "Marketing",
         "features": [
             "Multi-platform review monitoring",
@@ -301,7 +301,7 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
     AgentType.CASHFLOW_COMMANDER: {
         "name": "CashFlowCommanderAI",
         "description": "Projects cash flow, prioritizes collections, optimizes payment timing, and alerts you to potential cash crunches.",
-        "price_monthly": 299,
+        "price_monthly": 479,
         "category": "Finance",
         "features": [
             "30/60/90 day cash projections",
