@@ -256,10 +256,11 @@ describe('Home Page', () => {
         render(<Home />)
       })
       
-      expect(screen.getByText('Agents')).toBeInTheDocument()
-      expect(screen.getByText('Pricing')).toBeInTheDocument()
-      expect(screen.getByText('How It Works')).toBeInTheDocument()
-      expect(screen.getByText('Testimonials')).toBeInTheDocument()
+      // Multiple elements may contain these nav items (header + footer)
+      expect(screen.getAllByText('Agents').length).toBeGreaterThan(0)
+      expect(screen.getAllByText('Pricing').length).toBeGreaterThan(0)
+      expect(screen.getAllByText('How It Works').length).toBeGreaterThan(0)
+      expect(screen.getAllByText('Testimonials').length).toBeGreaterThan(0)
     })
   })
 
