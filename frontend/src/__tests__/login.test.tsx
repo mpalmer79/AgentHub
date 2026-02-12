@@ -141,7 +141,10 @@ describe('LoginPage', () => {
       })
       
       const emailInput = screen.getByPlaceholderText('name@company.com')
-      await user.type(emailInput, 'test@example.com')
+      
+      await act(async () => {
+        await user.type(emailInput, 'test@example.com')
+      })
       
       expect(emailInput).toHaveValue('test@example.com')
     })
@@ -154,7 +157,10 @@ describe('LoginPage', () => {
       })
       
       const passwordInput = screen.getByPlaceholderText('Enter your password')
-      await user.type(passwordInput, 'mypassword123')
+      
+      await act(async () => {
+        await user.type(passwordInput, 'mypassword123')
+      })
       
       expect(passwordInput).toHaveValue('mypassword123')
     })
@@ -169,10 +175,14 @@ describe('LoginPage', () => {
       const checkbox = screen.getByRole('checkbox')
       expect(checkbox).not.toBeChecked()
       
-      await user.click(checkbox)
+      await act(async () => {
+        await user.click(checkbox)
+      })
       expect(checkbox).toBeChecked()
       
-      await user.click(checkbox)
+      await act(async () => {
+        await user.click(checkbox)
+      })
       expect(checkbox).not.toBeChecked()
     })
   })
@@ -185,10 +195,14 @@ describe('LoginPage', () => {
         render(<LoginPage />)
       })
       
-      await user.type(screen.getByPlaceholderText('name@company.com'), 'test@example.com')
-      await user.type(screen.getByPlaceholderText('Enter your password'), 'password123')
+      await act(async () => {
+        await user.type(screen.getByPlaceholderText('name@company.com'), 'test@example.com')
+        await user.type(screen.getByPlaceholderText('Enter your password'), 'password123')
+      })
       
-      await user.click(screen.getByRole('button', { name: /sign in/i }))
+      await act(async () => {
+        await user.click(screen.getByRole('button', { name: /sign in/i }))
+      })
       
       await waitFor(() => {
         expect(mockSupabase.auth.signInWithPassword).toHaveBeenCalledWith({
@@ -205,10 +219,14 @@ describe('LoginPage', () => {
         render(<LoginPage />)
       })
       
-      await user.type(screen.getByPlaceholderText('name@company.com'), 'test@example.com')
-      await user.type(screen.getByPlaceholderText('Enter your password'), 'password123')
+      await act(async () => {
+        await user.type(screen.getByPlaceholderText('name@company.com'), 'test@example.com')
+        await user.type(screen.getByPlaceholderText('Enter your password'), 'password123')
+      })
       
-      await user.click(screen.getByRole('button', { name: /sign in/i }))
+      await act(async () => {
+        await user.click(screen.getByRole('button', { name: /sign in/i }))
+      })
       
       await waitFor(() => {
         expect(mockPush).toHaveBeenCalledWith('/dashboard')
@@ -226,10 +244,14 @@ describe('LoginPage', () => {
         render(<LoginPage />)
       })
       
-      await user.type(screen.getByPlaceholderText('name@company.com'), 'test@example.com')
-      await user.type(screen.getByPlaceholderText('Enter your password'), 'wrongpassword')
+      await act(async () => {
+        await user.type(screen.getByPlaceholderText('name@company.com'), 'test@example.com')
+        await user.type(screen.getByPlaceholderText('Enter your password'), 'wrongpassword')
+      })
       
-      await user.click(screen.getByRole('button', { name: /sign in/i }))
+      await act(async () => {
+        await user.click(screen.getByRole('button', { name: /sign in/i }))
+      })
       
       await waitFor(() => {
         expect(screen.getByText(/Invalid login credentials/i)).toBeInTheDocument()
@@ -245,10 +267,14 @@ describe('LoginPage', () => {
         render(<LoginPage />)
       })
       
-      await user.type(screen.getByPlaceholderText('name@company.com'), 'test@example.com')
-      await user.type(screen.getByPlaceholderText('Enter your password'), 'password')
+      await act(async () => {
+        await user.type(screen.getByPlaceholderText('name@company.com'), 'test@example.com')
+        await user.type(screen.getByPlaceholderText('Enter your password'), 'password')
+      })
       
-      await user.click(screen.getByRole('button', { name: /sign in/i }))
+      await act(async () => {
+        await user.click(screen.getByRole('button', { name: /sign in/i }))
+      })
       
       await waitFor(() => {
         expect(screen.getByText(/Failed to sign in/i)).toBeInTheDocument()
@@ -269,11 +295,16 @@ describe('LoginPage', () => {
         render(<LoginPage />)
       })
       
-      await user.type(screen.getByPlaceholderText('name@company.com'), 'test@example.com')
-      await user.type(screen.getByPlaceholderText('Enter your password'), 'password')
+      await act(async () => {
+        await user.type(screen.getByPlaceholderText('name@company.com'), 'test@example.com')
+        await user.type(screen.getByPlaceholderText('Enter your password'), 'password')
+      })
       
       const button = screen.getByRole('button', { name: /sign in/i })
-      await user.click(button)
+      
+      await act(async () => {
+        await user.click(button)
+      })
       
       await waitFor(() => {
         expect(button).toBeDisabled()
@@ -300,10 +331,14 @@ describe('LoginPage', () => {
         render(<LoginPage />)
       })
       
-      await user.type(screen.getByPlaceholderText('name@company.com'), 'test@example.com')
-      await user.type(screen.getByPlaceholderText('Enter your password'), 'password')
+      await act(async () => {
+        await user.type(screen.getByPlaceholderText('name@company.com'), 'test@example.com')
+        await user.type(screen.getByPlaceholderText('Enter your password'), 'password')
+      })
       
-      await user.click(screen.getByRole('button', { name: /sign in/i }))
+      await act(async () => {
+        await user.click(screen.getByRole('button', { name: /sign in/i }))
+      })
       
       await waitFor(() => {
         expect(screen.getByText(/Error/i)).toBeInTheDocument()
