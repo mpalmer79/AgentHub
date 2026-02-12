@@ -31,6 +31,7 @@ class Settings(BaseSettings):
     QUICKBOOKS_CLIENT_SECRET: str = os.getenv("QUICKBOOKS_CLIENT_SECRET", "")
     QUICKBOOKS_REDIRECT_URI: str = os.getenv("QUICKBOOKS_REDIRECT_URI", "")
     QUICKBOOKS_ENVIRONMENT: str = os.getenv("QUICKBOOKS_ENVIRONMENT", "sandbox")
+    QUICKBOOKS_WEBHOOK_VERIFIER_TOKEN: str = os.getenv("QUICKBOOKS_WEBHOOK_VERIFIER_TOKEN", "")
 
     # Google
     GOOGLE_CLIENT_ID: str = os.getenv("GOOGLE_CLIENT_ID", "")
