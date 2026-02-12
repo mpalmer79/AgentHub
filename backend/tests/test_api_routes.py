@@ -1,5 +1,12 @@
 """Tests for API route existence."""
 import pytest
+from fastapi.testclient import TestClient
+from app.main import app
+
+
+@pytest.fixture
+def client():
+    return TestClient(app)
 
 
 def test_api_routes_exist_api(client):
