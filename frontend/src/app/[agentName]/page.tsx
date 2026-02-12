@@ -38,7 +38,7 @@ const AGENT_CONFIG: Record<string, any> = {
       { q: 'How accurate is the transaction categorization?', a: 'BookkeeperAI achieves 99.2% accuracy out of the box and improves as it learns your specific business patterns. You can also create custom rules for edge cases.' },
       { q: 'Does it replace my accountant?', a: 'BookkeeperAI handles the day-to-day bookkeeping tasks, freeing your accountant to focus on strategic financial planning and tax optimization. Most customers reduce their accounting costs by 40-60%.' },
       { q: 'How long does setup take?', a: 'Most businesses are fully operational within 24 hours. Connect your bank accounts, sync your accounting software, and BookkeeperAI starts learning immediately.' },
-      { q: 'Is my financial data secure?', a: 'Absolutely. We use bank-level 256-bit encryption, SOC 2 Type II compliance, and never store your banking credentials. All data is encrypted at rest and in transit.' },
+      { q: 'Is my financial data secure?', a: 'Absolutely. We use bank-level 256-bit encryption with SOC 2-ready security architecture. We never store your banking credentials, and all data is encrypted at rest and in transit.' },
     ],
     testimonial: {
       quote: "BookkeeperAI saved us 20+ hours per week on financial operations. It's like having a tireless accountant on staff 24/7.",
@@ -699,7 +699,7 @@ const DEMO_SCENARIOS: Record<string, any> = {
     activities: [
       { type: 'success', text: 'Verified: GDPR data processing agreements up to date', time: '2s ago' },
       { type: 'warning', text: 'Gap Found: Privacy policy missing new cookie requirements', time: '4s ago' },
-      { type: 'success', text: 'Verified: SOC 2 controls properly documented', time: '6s ago' },
+      { type: 'success', text: 'Verified: Security controls properly documented', time: '6s ago' },
       { type: 'info', text: 'Update: CCPA amendment effective next month - action needed', time: '8s ago' },
       { type: 'success', text: 'Verified: Employee security training 98% complete', time: '10s ago' },
       { type: 'warning', text: 'Deadline: Business license renewal due in 45 days', time: '12s ago' },
