@@ -121,10 +121,10 @@ jobs:
         run: pip install ruff
 
       - name: Run Ruff linter
-        run: ruff check . --output-format=github --ignore=F401,F841
+        run: ruff check . --output-format=github
 
       - name: Run Ruff formatter check
-        run: ruff format --check . || true
+        run: ruff format --check .
 
   backend-typecheck:
     name: Backend Type Check
