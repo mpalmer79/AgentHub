@@ -1,9 +1,14 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, EmailStr
-from app.core.database import get_supabase
+
 from app.core.auth import get_current_user
+from app.core.config import settings
+from app.core.database import get_supabase
+from app.core.logging import get_logger
+from app.core.ratelimit import limiter
 
 router = APIRouter()
+log = get_logger(__name__)
 
 
 class SignUpRequest(BaseModel):
@@ -27,82 +32,90 @@ class UserResponse(BaseModel):
 
 
 @router.post("/signup")
-async def sign_up(request: SignUpRequest):
+@limiter.limit(settings.RATE_LIMIT_AUTH)
+async def sign_up(request: Request, payload: SignUpRequest):
     try:
         supabase = get_supabase()
         auth_response = supabase.auth.sign_up({
-            "email": request.email,
-            "password": request.password,
+            "email": payload.email,
+            "password": payload.password,
             "options": {
                 "data": {
-                    "full_name": request.full_name,
-                    "company_name": request.company_name
+                    "full_name": payload.full_name,
+                    "company_name": payload.company_name,
                 }
-            }
+            },
         })
-        
-        if auth_response.user:
-            supabase.table("users").insert({
-                "id": auth_response.user.id,
-                "email": request.email,
-                "full_name": request.full_name,
-                "company_name": request.company_name
-            }).execute()
-            
-            return {
-                "message": "Account created successfully",
-                "user_id": auth_response.user.id
-            }
-        else:
+
+        if not auth_response.user:
             raise HTTPException(status_code=400, detail="Failed to create account")
-            
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+
+        supabase.table("users").insert({
+            "id": auth_response.user.id,
+            "email": payload.email,
+            "full_name": payload.full_name,
+            "company_name": payload.company_name,
+        }).execute()
+
+        return {
+            "message": "Account created successfully",
+            "user_id": auth_response.user.id,
+        }
+
+    except HTTPException:
+        raise
+    except Exception as exc:
+        # Don't leak provider error messages to the client; log them server-side.
+        log.warning("signup_failed", extra={"email": payload.email, "error": str(exc)})
+        raise HTTPException(status_code=400, detail="Unable to create account")
 
 
 @router.post("/signin")
-async def sign_in(request: SignInRequest):
+@limiter.limit(settings.RATE_LIMIT_AUTH)
+async def sign_in(request: Request, payload: SignInRequest):
     try:
         supabase = get_supabase()
         auth_response = supabase.auth.sign_in_with_password({
-            "email": request.email,
-            "password": request.password
+            "email": payload.email,
+            "password": payload.password,
         })
-        
-        if auth_response.session:
-            return {
-                "access_token": auth_response.session.access_token,
-                "refresh_token": auth_response.session.refresh_token,
-                "user": {
-                    "id": auth_response.user.id,
-                    "email": auth_response.user.email
-                }
-            }
-        else:
+
+        if not auth_response.session:
             raise HTTPException(status_code=401, detail="Invalid credentials")
-            
-    except Exception as e:
-        raise HTTPException(status_code=401, detail=str(e))
+
+        return {
+            "access_token": auth_response.session.access_token,
+            "refresh_token": auth_response.session.refresh_token,
+            "user": {
+                "id": auth_response.user.id,
+                "email": auth_response.user.email,
+            },
+        }
+
+    except HTTPException:
+        raise
+    except Exception as exc:
+        log.warning("signin_failed", extra={"email": payload.email, "error": str(exc)})
+        raise HTTPException(status_code=401, detail="Invalid credentials")
 
 
 @router.post("/signout")
-async def sign_out(user = Depends(get_current_user)):
+async def sign_out(user=Depends(get_current_user)):
     return {"message": "Signed out successfully"}
 
 
 @router.get("/me")
-async def get_me(user = Depends(get_current_user)):
+async def get_me(user=Depends(get_current_user)):
     """Get current user profile. Uses user-scoped DB access."""
-    supabase = get_supabase(user.token)  # FIXED: Pass user token for RLS
+    supabase = get_supabase(user.token)
     result = supabase.table("users").select("*").eq("id", user.id).single().execute()
-    
+
     if result.data:
         return result.data
-    
-    # FIXED: Fallback uses fields from CurrentUser (no user_metadata)
+
     return {
         "id": user.id,
         "email": user.email,
         "full_name": None,
-        "company_name": None
+        "company_name": None,
     }

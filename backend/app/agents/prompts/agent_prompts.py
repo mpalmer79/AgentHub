@@ -1,6 +1,11 @@
 from typing import Dict
-from datetime import datetime
+from datetime import datetime, timezone
 from app.agents.registry import AgentType, AGENT_REGISTRY
+
+
+# Bump this when you change any agent prompt. Recorded on every task so
+# you can attribute behavioral regressions to a specific prompt revision.
+PROMPT_VERSION = "2026-05-17.1"
 
 
 AGENT_PROMPTS: Dict[AgentType, str] = {
@@ -198,7 +203,7 @@ Guidelines:
 4. If you encounter errors, explain them in plain language and suggest solutions
 5. Never make assumptions about data - always verify with the available tools
 
-Current date/time: {datetime.utcnow().isoformat()}
+Current date/time (UTC): {datetime.now(timezone.utc).isoformat()}
 """
     
     if agent_type in AGENT_PROMPTS:

@@ -30,6 +30,14 @@ class FakeUsage:
         self.output_tokens = output_tokens
 
 
+def _patch_anthropic_and_supabase(monkeypatch, responses):
+    monkeypatch.setattr(
+        "app.agents.runtime.anthropic.Anthropic",
+        lambda api_key=None: FakeAnthropicClient(responses),
+    )
+    monkeypatch.setattr("app.agents.runtime.get_supabase", lambda *_a, **_k: FakeSupabaseClient())
+
+
 class FakeClaudeResponse:
     def __init__(self, stop_reason: str, content: list):
         self.stop_reason = stop_reason
@@ -204,4 +212,58 @@ class TestAgentRuntimeMaxIterations:
 
         assert result["success"] is False
         assert "Max iterations" in result["error"]
-        assert result["iterations"] == 10
+        assert result["failure_code"] == "MAX_ITERATIONS"
+        assert result["iterations"] == runtime.max_iterations
+
+
+class TestAgentRuntimeBudget:
+
+    @pytest.mark.asyncio
+    async def test_task_aborts_when_budget_exceeded(self, monkeypatch):
+        # Two tool-use rounds, each scripted to consume more than the budget.
+        responses = [
+            FakeClaudeResponse(
+                stop_reason="tool_use",
+                content=[FakeToolUseBlock("t1", "get_transactions", {})],
+            ),
+            FakeClaudeResponse(
+                stop_reason="tool_use",
+                content=[FakeToolUseBlock("t2", "get_transactions", {})],
+            ),
+        ]
+        # Inflate usage so we trip the budget after iter 2.
+        for r in responses:
+            r.usage = FakeUsage(input_tokens=600, output_tokens=600)
+
+        _patch_anthropic_and_supabase(monkeypatch, responses)
+
+        runtime = AgentRuntime(
+            agent_type=AgentType.BOOKKEEPER,
+            user_id="user_123",
+            max_tokens_per_task=2000,
+        )
+
+        async def fake_execute(tool_name, tool_input):
+            return {"ok": True}
+        runtime.executor.execute = fake_execute
+
+        result = await runtime.execute("Budget runaway", context={})
+
+        assert result["success"] is False
+        assert result["failure_code"] == "BUDGET_EXCEEDED"
+        assert result["total_tokens"] > 2000
+
+    @pytest.mark.asyncio
+    async def test_model_is_configurable(self, monkeypatch):
+        responses = [FakeClaudeResponse("end_turn", [FakeTextBlock("done")])]
+        _patch_anthropic_and_supabase(monkeypatch, responses)
+
+        runtime = AgentRuntime(
+            agent_type=AgentType.BOOKKEEPER,
+            user_id="user_123",
+            model="claude-haiku-4-5-20251001",
+        )
+        assert runtime.model == "claude-haiku-4-5-20251001"
+
+        result = await runtime.execute("Hello", context={})
+        assert result["success"] is True
