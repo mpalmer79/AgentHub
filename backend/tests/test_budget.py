@@ -1,4 +1,5 @@
 """Tests for the per-task token budget."""
+
 import pytest
 
 from app.core.budget import BudgetExceeded, TokenBudget

@@ -78,13 +78,17 @@ class AgentRuntime:
 
     def _emit_event(self, task_id: str, event_type: str, payload: dict = None):
         supabase = get_supabase()
-        supabase.table("agent_task_events").insert({
-            "task_id": task_id,
-            "event_type": event_type,
-            "payload": payload or {},
-        }).execute()
+        supabase.table("agent_task_events").insert(
+            {
+                "task_id": task_id,
+                "event_type": event_type,
+                "payload": payload or {},
+            }
+        ).execute()
 
-    async def execute(self, task: str, context: Dict[str, Any], task_id: str = None) -> Dict[str, Any]:
+    async def execute(
+        self, task: str, context: Dict[str, Any], task_id: str = None
+    ) -> Dict[str, Any]:
         start_time = time.time()
         budget = TokenBudget(max_tokens=self.max_tokens_per_task)
 
@@ -106,11 +110,15 @@ class AgentRuntime:
         )
 
         if task_id:
-            self._emit_event(task_id, "task_started", {
-                "agent_type": self.agent_type.value,
-                "model": self.model,
-                "prompt_version": PROMPT_VERSION,
-            })
+            self._emit_event(
+                task_id,
+                "task_started",
+                {
+                    "agent_type": self.agent_type.value,
+                    "model": self.model,
+                    "prompt_version": PROMPT_VERSION,
+                },
+            )
 
         iteration = 0
         while iteration < self.max_iterations:
@@ -145,12 +153,16 @@ class AgentRuntime:
                     },
                 )
                 if task_id:
-                    self._emit_event(task_id, "task_failed", {
-                        "reason": "budget_exceeded",
-                        "total_tokens": budget.total_tokens,
-                        "max_tokens": budget.max_tokens,
-                        "duration_ms": duration_ms,
-                    })
+                    self._emit_event(
+                        task_id,
+                        "task_failed",
+                        {
+                            "reason": "budget_exceeded",
+                            "total_tokens": budget.total_tokens,
+                            "max_tokens": budget.max_tokens,
+                            "duration_ms": duration_ms,
+                        },
+                    )
                 return {
                     "success": False,
                     "error": str(exc),
@@ -160,13 +172,17 @@ class AgentRuntime:
                 }
 
             if task_id:
-                self._emit_event(task_id, "model_call_completed", {
-                    "iteration": iteration,
-                    "stop_reason": response.stop_reason,
-                    "input_tokens": input_tokens,
-                    "output_tokens": output_tokens,
-                    "total_tokens": budget.total_tokens,
-                })
+                self._emit_event(
+                    task_id,
+                    "model_call_completed",
+                    {
+                        "iteration": iteration,
+                        "stop_reason": response.stop_reason,
+                        "input_tokens": input_tokens,
+                        "output_tokens": output_tokens,
+                        "total_tokens": budget.total_tokens,
+                    },
+                )
 
             # Completion
             if response.stop_reason == "end_turn":
@@ -186,20 +202,26 @@ class AgentRuntime:
                 )
                 if task_id:
                     supabase = get_supabase()
-                    supabase.table("agent_tasks").update({
-                        "duration_ms": duration_ms,
-                        "model_provider": "anthropic",
-                        "model_name": self.model,
-                        "input_tokens": budget.input_tokens,
-                        "output_tokens": budget.output_tokens,
-                        "total_tokens": budget.total_tokens,
-                    }).eq("id", task_id).execute()
+                    supabase.table("agent_tasks").update(
+                        {
+                            "duration_ms": duration_ms,
+                            "model_provider": "anthropic",
+                            "model_name": self.model,
+                            "input_tokens": budget.input_tokens,
+                            "output_tokens": budget.output_tokens,
+                            "total_tokens": budget.total_tokens,
+                        }
+                    ).eq("id", task_id).execute()
 
-                    self._emit_event(task_id, "task_completed", {
-                        "iterations": iteration,
-                        "duration_ms": duration_ms,
-                        "total_tokens": budget.total_tokens,
-                    })
+                    self._emit_event(
+                        task_id,
+                        "task_completed",
+                        {
+                            "iterations": iteration,
+                            "duration_ms": duration_ms,
+                            "total_tokens": budget.total_tokens,
+                        },
+                    )
 
                 return {
                     "success": True,
@@ -215,29 +237,41 @@ class AgentRuntime:
                         continue
 
                     if task_id:
-                        self._emit_event(task_id, "tool_called", {
-                            "tool_name": block.name,
-                            "input": block.input,
-                            "iteration": iteration,
-                        })
+                        self._emit_event(
+                            task_id,
+                            "tool_called",
+                            {
+                                "tool_name": block.name,
+                                "input": block.input,
+                                "iteration": iteration,
+                            },
+                        )
 
                     tool_result = await self.executor.execute(block.name, block.input)
 
                     if task_id:
-                        self._emit_event(task_id, "tool_result", {
-                            "tool_name": block.name,
-                            "result_preview": str(tool_result)[:500],
-                        })
+                        self._emit_event(
+                            task_id,
+                            "tool_result",
+                            {
+                                "tool_name": block.name,
+                                "result_preview": str(tool_result)[:500],
+                            },
+                        )
 
                     messages.append({"role": "assistant", "content": response.content})
-                    messages.append({
-                        "role": "user",
-                        "content": [{
-                            "type": "tool_result",
-                            "tool_use_id": block.id,
-                            "content": str(tool_result),
-                        }],
-                    })
+                    messages.append(
+                        {
+                            "role": "user",
+                            "content": [
+                                {
+                                    "type": "tool_result",
+                                    "tool_use_id": block.id,
+                                    "content": str(tool_result),
+                                }
+                            ],
+                        }
+                    )
 
                 continue
 
@@ -254,11 +288,15 @@ class AgentRuntime:
             },
         )
         if task_id:
-            self._emit_event(task_id, "task_failed", {
-                "reason": "max_iterations",
-                "duration_ms": duration_ms,
-                "total_tokens": budget.total_tokens,
-            })
+            self._emit_event(
+                task_id,
+                "task_failed",
+                {
+                    "reason": "max_iterations",
+                    "duration_ms": duration_ms,
+                    "total_tokens": budget.total_tokens,
+                },
+            )
 
         return {
             "success": False,

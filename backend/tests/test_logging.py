@@ -1,4 +1,5 @@
 """Tests for structured JSON logging."""
+
 import io
 import json
 import logging
@@ -8,8 +9,13 @@ from app.core.logging import JsonFormatter, configure_logging, get_logger
 
 def test_formatter_emits_valid_json_with_extras():
     record = logging.LogRecord(
-        name="agenthub.test", level=logging.INFO, pathname=__file__,
-        lineno=1, msg="task_started", args=(), exc_info=None,
+        name="agenthub.test",
+        level=logging.INFO,
+        pathname=__file__,
+        lineno=1,
+        msg="task_started",
+        args=(),
+        exc_info=None,
     )
     record.task_id = "t-123"
     record.agent_type = "bookkeeper"
@@ -29,6 +35,7 @@ def test_configure_logging_is_idempotent():
     # can't assert handler count. What we *can* assert is that calling twice
     # doesn't keep stacking our JsonFormatter handlers.
     import app.core.logging as logging_mod
+
     logging_mod._CONFIGURED = False
     configure_logging("INFO")
     json_after_first = [

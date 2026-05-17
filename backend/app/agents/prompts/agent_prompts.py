@@ -190,11 +190,11 @@ InventoryIQ-specific guidelines:
 def build_system_prompt(agent_type: AgentType) -> str:
     """Build the complete system prompt for an agent"""
     agent_info = AGENT_REGISTRY.get(agent_type, {})
-    
-    base_prompt = f"""You are {agent_info.get('name', 'AI Agent')}, an AI agent specialized in {agent_info.get('description', 'business automation')}
+
+    base_prompt = f"""You are {agent_info.get("name", "AI Agent")}, an AI agent specialized in {agent_info.get("description", "business automation")}
 
 Your capabilities include:
-{chr(10).join(f'- {feature}' for feature in agent_info.get('features', []))}
+{chr(10).join(f"- {feature}" for feature in agent_info.get("features", []))}
 
 Guidelines:
 1. Always explain what you're about to do before taking action
@@ -205,8 +205,8 @@ Guidelines:
 
 Current date/time (UTC): {datetime.now(timezone.utc).isoformat()}
 """
-    
+
     if agent_type in AGENT_PROMPTS:
         base_prompt += f"\n{AGENT_PROMPTS[agent_type]}"
-    
+
     return base_prompt

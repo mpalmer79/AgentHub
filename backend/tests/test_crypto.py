@@ -3,6 +3,7 @@ Tests for the encryption service.
 
 Tests token encryption/decryption for OAuth tokens.
 """
+
 import pytest
 import os
 

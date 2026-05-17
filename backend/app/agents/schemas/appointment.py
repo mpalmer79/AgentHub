@@ -12,7 +12,7 @@ def get_appointment_schema() -> List[Dict[str, Any]]:
                 "days_ahead": integer_prop("Number of days to look ahead (default: 7)"),
                 "max_results": integer_prop("Maximum number of events to return (default: 25)"),
                 "calendar_id": string_prop("Calendar ID (default: 'primary')"),
-            }
+            },
         ),
         create_tool_schema(
             name="get_event_by_id",
@@ -21,25 +21,29 @@ def get_appointment_schema() -> List[Dict[str, Any]]:
                 "event_id": string_prop("The calendar event ID"),
                 "calendar_id": string_prop("Calendar ID (default: 'primary')"),
             },
-            required=["event_id"]
+            required=["event_id"],
         ),
         create_tool_schema(
             name="find_available_slots",
             description="Find available time slots for booking appointments",
             properties={
-                "duration_minutes": integer_prop("Duration of the appointment in minutes (default: 60)"),
+                "duration_minutes": integer_prop(
+                    "Duration of the appointment in minutes (default: 60)"
+                ),
                 "days_ahead": integer_prop("Number of days to search (default: 7)"),
                 "working_hours_start": integer_prop("Start of working hours (default: 9)"),
                 "working_hours_end": integer_prop("End of working hours (default: 17)"),
                 "calendar_id": string_prop("Calendar ID (default: 'primary')"),
-            }
+            },
         ),
         create_tool_schema(
             name="book_appointment",
             description="Book a new appointment on the calendar",
             properties={
                 "summary": string_prop("Title/name of the appointment"),
-                "start_time": string_prop("Start time in ISO format (e.g., '2024-01-15T14:00:00Z')"),
+                "start_time": string_prop(
+                    "Start time in ISO format (e.g., '2024-01-15T14:00:00Z')"
+                ),
                 "end_time": string_prop("End time in ISO format"),
                 "description": string_prop("Description or notes for the appointment"),
                 "location": string_prop("Location or video meeting link"),
@@ -47,7 +51,7 @@ def get_appointment_schema() -> List[Dict[str, Any]]:
                 "send_notifications": boolean_prop("Whether to notify attendees (default: true)"),
                 "calendar_id": string_prop("Calendar ID (default: 'primary')"),
             },
-            required=["summary", "start_time", "end_time"]
+            required=["summary", "start_time", "end_time"],
         ),
         create_tool_schema(
             name="reschedule_appointment",
@@ -59,7 +63,7 @@ def get_appointment_schema() -> List[Dict[str, Any]]:
                 "notify_attendees": boolean_prop("Whether to notify attendees (default: true)"),
                 "calendar_id": string_prop("Calendar ID (default: 'primary')"),
             },
-            required=["event_id", "new_start_time", "new_end_time"]
+            required=["event_id", "new_start_time", "new_end_time"],
         ),
         create_tool_schema(
             name="cancel_appointment",
@@ -70,7 +74,7 @@ def get_appointment_schema() -> List[Dict[str, Any]]:
                 "cancellation_reason": string_prop("Reason for cancellation"),
                 "calendar_id": string_prop("Calendar ID (default: 'primary')"),
             },
-            required=["event_id"]
+            required=["event_id"],
         ),
         create_tool_schema(
             name="send_reminder",
@@ -80,14 +84,14 @@ def get_appointment_schema() -> List[Dict[str, Any]]:
                 "reminder_message": string_prop("Custom reminder message"),
                 "calendar_id": string_prop("Calendar ID (default: 'primary')"),
             },
-            required=["event_id"]
+            required=["event_id"],
         ),
         create_tool_schema(
             name="get_todays_schedule",
             description="Get today's complete schedule with upcoming and past events",
             properties={
                 "calendar_id": string_prop("Calendar ID (default: 'primary')"),
-            }
+            },
         ),
         create_tool_schema(
             name="check_conflicts",
@@ -97,7 +101,7 @@ def get_appointment_schema() -> List[Dict[str, Any]]:
                 "end_time": string_prop("Proposed end time in ISO format"),
                 "calendar_id": string_prop("Calendar ID (default: 'primary')"),
             },
-            required=["start_time", "end_time"]
+            required=["start_time", "end_time"],
         ),
         create_tool_schema(
             name="add_attendee",
@@ -108,7 +112,7 @@ def get_appointment_schema() -> List[Dict[str, Any]]:
                 "notify": boolean_prop("Whether to notify the new attendee (default: true)"),
                 "calendar_id": string_prop("Calendar ID (default: 'primary')"),
             },
-            required=["event_id", "attendee_email"]
+            required=["event_id", "attendee_email"],
         ),
         create_tool_schema(
             name="get_no_show_risks",
@@ -116,6 +120,6 @@ def get_appointment_schema() -> List[Dict[str, Any]]:
             properties={
                 "days_ahead": integer_prop("Number of days to analyze (default: 3)"),
                 "calendar_id": string_prop("Calendar ID (default: 'primary')"),
-            }
+            },
         ),
     ]

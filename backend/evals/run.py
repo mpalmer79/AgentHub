@@ -2,6 +2,7 @@
 
 CI failure is the goal. If any case fails, exit non-zero.
 """
+
 from __future__ import annotations
 
 import sys

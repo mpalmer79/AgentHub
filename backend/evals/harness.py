@@ -12,6 +12,7 @@ For live evals against the real API, set ANTHROPIC_API_KEY and pass
 `live=True` to `run_case` — this is intentionally opt-in so CI stays
 deterministic and free.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -25,6 +26,7 @@ from app.agents.runtime import AgentRuntime
 
 # ---------- Fake Anthropic client ----------
 
+
 class _FakeUsage:
     def __init__(self, input_tokens: int = 100, output_tokens: int = 50):
         self.input_tokens = input_tokens
@@ -33,12 +35,14 @@ class _FakeUsage:
 
 class _FakeTextBlock:
     type = "text"
+
     def __init__(self, text: str):
         self.text = text
 
 
 class _FakeToolUseBlock:
     type = "tool_use"
+
     def __init__(self, tool_id: str, name: str, input_data: dict):
         self.id = tool_id
         self.name = name
@@ -71,11 +75,16 @@ def text(s: str, *, in_tok: int = 100, out_tok: int = 50) -> _FakeResponse:
     return _FakeResponse("end_turn", [_FakeTextBlock(s)], _FakeUsage(in_tok, out_tok))
 
 
-def tool_call(tool_id: str, name: str, args: dict, *, in_tok: int = 80, out_tok: int = 40) -> _FakeResponse:
-    return _FakeResponse("tool_use", [_FakeToolUseBlock(tool_id, name, args)], _FakeUsage(in_tok, out_tok))
+def tool_call(
+    tool_id: str, name: str, args: dict, *, in_tok: int = 80, out_tok: int = 40
+) -> _FakeResponse:
+    return _FakeResponse(
+        "tool_use", [_FakeToolUseBlock(tool_id, name, args)], _FakeUsage(in_tok, out_tok)
+    )
 
 
 # ---------- Fake Supabase (only what the runtime touches) ----------
+
 
 class _FakeResult:
     data = None
@@ -108,11 +117,13 @@ class _FakeTable:
 class _FakeSupabase:
     def __init__(self):
         self._tables: dict[str, _FakeTable] = {}
+
     def table(self, name: str) -> _FakeTable:
         return self._tables.setdefault(name, _FakeTable())
 
 
 # ---------- Public API ----------
+
 
 @dataclass
 class CaseResult:
@@ -163,7 +174,8 @@ def run_case(case: Case, *, monkeypatch=None) -> CaseResult:
 
         if bool(result.get("success")) != case.expect_success:
             return CaseResult(
-                name=case.name, passed=False,
+                name=case.name,
+                passed=False,
                 detail=f"expected success={case.expect_success}, got {result}",
                 tool_calls=observed_calls,
                 iterations=int(result.get("iterations") or 0),
@@ -173,7 +185,8 @@ def run_case(case: Case, *, monkeypatch=None) -> CaseResult:
         for expected in case.expect_tools:
             if expected not in observed_tool_names:
                 return CaseResult(
-                    name=case.name, passed=False,
+                    name=case.name,
+                    passed=False,
                     detail=f"expected tool '{expected}' to be called; got {observed_tool_names}",
                     tool_calls=observed_calls,
                     iterations=int(result.get("iterations") or 0),
@@ -184,13 +197,16 @@ def run_case(case: Case, *, monkeypatch=None) -> CaseResult:
                 case.assert_fn(result)
             except AssertionError as exc:
                 return CaseResult(
-                    name=case.name, passed=False, detail=f"assert_fn failed: {exc}",
+                    name=case.name,
+                    passed=False,
+                    detail=f"assert_fn failed: {exc}",
                     tool_calls=observed_calls,
                     iterations=int(result.get("iterations") or 0),
                 )
 
         return CaseResult(
-            name=case.name, passed=True,
+            name=case.name,
+            passed=True,
             tool_calls=observed_calls,
             iterations=int(result.get("iterations") or 0),
         )

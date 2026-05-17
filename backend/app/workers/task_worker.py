@@ -90,13 +90,7 @@ async def claim_next_queue_record() -> Optional[Dict[str, Any]]:
 
         # Our minimal client may not return affected row count;
         # so re-read and confirm we own it.
-        confirm = (
-            sb.table("agent_task_queue")
-            .select("*")
-            .eq("id", qid)
-            .single()
-            .execute()
-        )
+        confirm = sb.table("agent_task_queue").select("*").eq("id", qid).single().execute()
         claimed = confirm.data or {}
         if claimed.get("status") == "processing" and claimed.get("locked_by") == wid:
             return claimed
@@ -111,7 +105,11 @@ async def process_queue_record(queue_record: Dict[str, Any]) -> None:
     tid = queue_record.get("task_id")
     if not tid:
         sb.table("agent_task_queue").update(
-            {"status": "processed", "processed_at": utc_now_iso(), "last_error": "Queue record missing task_id"}
+            {
+                "status": "processed",
+                "processed_at": utc_now_iso(),
+                "last_error": "Queue record missing task_id",
+            }
         ).eq("id", qid).execute()
         return
 
@@ -120,13 +118,19 @@ async def process_queue_record(queue_record: Dict[str, Any]) -> None:
     task = task_res.data or {}
     if not task:
         sb.table("agent_task_queue").update(
-            {"status": "processed", "processed_at": utc_now_iso(), "last_error": f"Task {tid} not found"}
+            {
+                "status": "processed",
+                "processed_at": utc_now_iso(),
+                "last_error": f"Task {tid} not found",
+            }
         ).eq("id", qid).execute()
         return
 
     # Mark task started if not already
     if not task.get("started_at"):
-        sb.table("agent_tasks").update({"status": "running", "started_at": utc_now_iso()}).eq("id", tid).execute()
+        sb.table("agent_tasks").update({"status": "running", "started_at": utc_now_iso()}).eq(
+            "id", tid
+        ).execute()
 
     agent_type_str = task.get("agent_type")
     user_id = task.get("user_id")
@@ -138,14 +142,18 @@ async def process_queue_record(queue_record: Dict[str, Any]) -> None:
         agent_type = AgentType(agent_type_str)
     except Exception as exc:
         fi = classify_failure(exc)
-        sb.table("agent_tasks").update({
-            "status": "failed",
-            "failure_code": "UNKNOWN_AGENT",
-            "retryable": False,
-            "error_detail": f"Unknown agent type: {agent_type_str}",
-            "completed_at": utc_now_iso(),
-        }).eq("id", tid).execute()
-        sb.table("agent_task_queue").update({"status": "processed", "processed_at": utc_now_iso()}).eq("id", qid).execute()
+        sb.table("agent_tasks").update(
+            {
+                "status": "failed",
+                "failure_code": "UNKNOWN_AGENT",
+                "retryable": False,
+                "error_detail": f"Unknown agent type: {agent_type_str}",
+                "completed_at": utc_now_iso(),
+            }
+        ).eq("id", tid).execute()
+        sb.table("agent_task_queue").update(
+            {"status": "processed", "processed_at": utc_now_iso()}
+        ).eq("id", qid).execute()
         return
 
     # Execute
@@ -155,22 +163,26 @@ async def process_queue_record(queue_record: Dict[str, Any]) -> None:
         success = bool(result.get("success"))
         if success:
             # Complete task
-            sb.table("agent_tasks").update({
-                "status": "completed",
-                "completed_at": utc_now_iso(),
-                "result": result.get("result"),
-                "failure_code": None,
-                "retryable": False,
-                "error_detail": None,
-            }).eq("id", tid).execute()
+            sb.table("agent_tasks").update(
+                {
+                    "status": "completed",
+                    "completed_at": utc_now_iso(),
+                    "result": result.get("result"),
+                    "failure_code": None,
+                    "retryable": False,
+                    "error_detail": None,
+                }
+            ).eq("id", tid).execute()
 
-            sb.table("agent_task_queue").update({
-                "status": "processed",
-                "processed_at": utc_now_iso(),
-                "last_error": None,
-                "locked_at": None,
-                "locked_by": None,
-            }).eq("id", qid).execute()
+            sb.table("agent_task_queue").update(
+                {
+                    "status": "processed",
+                    "processed_at": utc_now_iso(),
+                    "last_error": None,
+                    "locked_at": None,
+                    "locked_by": None,
+                }
+            ).eq("id", qid).execute()
             return
 
         # Runtime returned failure
@@ -185,39 +197,47 @@ async def process_queue_record(queue_record: Dict[str, Any]) -> None:
         max_attempts = int(queue_record.get("max_attempts") or 3)
 
         # persist task classification (task is business-level record)
-        sb.table("agent_tasks").update({
-            "failure_code": fi.code,
-            "retryable": fi.retryable,
-            "error_detail": fi.message,
-        }).eq("id", tid).execute()
+        sb.table("agent_tasks").update(
+            {
+                "failure_code": fi.code,
+                "retryable": fi.retryable,
+                "error_detail": fi.message,
+            }
+        ).eq("id", tid).execute()
 
         if fi.retryable and attempts < max_attempts:
             next_run_at = compute_next_run_at(attempts)
             # Put back into queue for retry
-            sb.table("agent_task_queue").update({
-                "status": "queued",
-                "attempts": attempts,
-                "next_run_at": next_run_at,
-                "last_error": fi.message,
-                "locked_at": None,
-                "locked_by": None,
-            }).eq("id", qid).execute()
+            sb.table("agent_task_queue").update(
+                {
+                    "status": "queued",
+                    "attempts": attempts,
+                    "next_run_at": next_run_at,
+                    "last_error": fi.message,
+                    "locked_at": None,
+                    "locked_by": None,
+                }
+            ).eq("id", qid).execute()
             return
 
         # Final failure
-        sb.table("agent_tasks").update({
-            "status": "failed",
-            "completed_at": utc_now_iso(),
-        }).eq("id", tid).execute()
+        sb.table("agent_tasks").update(
+            {
+                "status": "failed",
+                "completed_at": utc_now_iso(),
+            }
+        ).eq("id", tid).execute()
 
-        sb.table("agent_task_queue").update({
-            "status": "processed",
-            "processed_at": utc_now_iso(),
-            "attempts": attempts,
-            "last_error": fi.message,
-            "locked_at": None,
-            "locked_by": None,
-        }).eq("id", qid).execute()
+        sb.table("agent_task_queue").update(
+            {
+                "status": "processed",
+                "processed_at": utc_now_iso(),
+                "attempts": attempts,
+                "last_error": fi.message,
+                "locked_at": None,
+                "locked_by": None,
+            }
+        ).eq("id", qid).execute()
         return
 
 

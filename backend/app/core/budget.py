@@ -5,6 +5,7 @@ task. Without a ceiling, a poorly-prompted agent can run away with
 spend. `TokenBudget` is checked after every model call and raises
 `BudgetExceeded` when the cap is hit.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field

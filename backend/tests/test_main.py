@@ -1,4 +1,5 @@
 """Tests for FastAPI app, including health and readiness probes."""
+
 import pytest
 from fastapi.testclient import TestClient
 

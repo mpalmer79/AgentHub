@@ -1,6 +1,7 @@
 """
 Tests for the agents API endpoints.
 """
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -14,7 +15,6 @@ def client():
 
 
 class TestAgentCatalog:
-
     def test_catalog_returns_all_agents(self, client):
         response = client.get("/api/agents/catalog")
         assert response.status_code == 200
@@ -47,7 +47,6 @@ class TestAgentCatalog:
 
 
 class TestAgentSubscriptions:
-
     def test_subscriptions_requires_auth(self, client):
         response = client.get("/api/agents/subscriptions")
         assert response.status_code == 401
@@ -62,13 +61,19 @@ class TestAgentSubscriptions:
 
 
 class TestAgentTypes:
-
     def test_all_agent_types_in_registry(self):
         for agent_type in AgentType:
             assert agent_type in AGENT_REGISTRY
 
     def test_registry_has_required_fields(self):
-        required_fields = ["name", "description", "price_monthly", "features", "integrations", "category"]
+        required_fields = [
+            "name",
+            "description",
+            "price_monthly",
+            "features",
+            "integrations",
+            "category",
+        ]
         for _, info in AGENT_REGISTRY.items():
             for field in required_fields:
                 assert field in info

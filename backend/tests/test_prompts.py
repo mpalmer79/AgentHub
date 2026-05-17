@@ -1,4 +1,5 @@
 """Tests for prompt versioning and system-prompt assembly."""
+
 import re
 
 from app.agents.prompts.agent_prompts import (
@@ -10,8 +11,9 @@ from app.agents.registry import AgentType
 
 
 def test_prompt_version_is_dated_string():
-    assert re.match(r"^\d{4}-\d{2}-\d{2}\.\d+$", PROMPT_VERSION), \
+    assert re.match(r"^\d{4}-\d{2}-\d{2}\.\d+$", PROMPT_VERSION), (
         f"PROMPT_VERSION must look like 'YYYY-MM-DD.N', got {PROMPT_VERSION!r}"
+    )
 
 
 def test_every_agent_has_a_prompt():

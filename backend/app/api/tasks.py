@@ -33,16 +33,12 @@ async def get_pending_tasks(user: CurrentUser = Depends(get_current_user)):
 
 
 @router.post("/{task_id}/approve")
-async def approve_task(task_id: str, approval: TaskApproval, user: CurrentUser = Depends(get_current_user)):
+async def approve_task(
+    task_id: str, approval: TaskApproval, user: CurrentUser = Depends(get_current_user)
+):
     supabase = get_supabase_user(user.token)
 
-    task = (
-        supabase.table("agent_tasks")
-        .select("*")
-        .eq("id", task_id)
-        .single()
-        .execute()
-    )
+    task = supabase.table("agent_tasks").select("*").eq("id", task_id).single().execute()
 
     if not task.data:
         raise HTTPException(status_code=404, detail="Task not found")

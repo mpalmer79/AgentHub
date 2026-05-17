@@ -106,14 +106,22 @@ async def readiness_check():
         if not healthy:
             ok = False
 
-    add("supabase_config", bool(settings.SUPABASE_URL and settings.SUPABASE_SERVICE_ROLE_KEY),
-        "SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY required")
-    add("supabase_jwks", bool(settings.resolved_jwks_url()),
-        "JWKS URL could not be resolved")
-    add("anthropic", bool(settings.ANTHROPIC_API_KEY),
-        "ANTHROPIC_API_KEY required for agent runtime")
-    add("encryption", bool(settings.INTEGRATION_ENCRYPTION_KEY),
-        "INTEGRATION_ENCRYPTION_KEY required for OAuth token storage")
+    add(
+        "supabase_config",
+        bool(settings.SUPABASE_URL and settings.SUPABASE_SERVICE_ROLE_KEY),
+        "SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY required",
+    )
+    add("supabase_jwks", bool(settings.resolved_jwks_url()), "JWKS URL could not be resolved")
+    add(
+        "anthropic",
+        bool(settings.ANTHROPIC_API_KEY),
+        "ANTHROPIC_API_KEY required for agent runtime",
+    )
+    add(
+        "encryption",
+        bool(settings.INTEGRATION_ENCRYPTION_KEY),
+        "INTEGRATION_ENCRYPTION_KEY required for OAuth token storage",
+    )
 
     status_code = 200 if ok else 503
     return JSONResponse(

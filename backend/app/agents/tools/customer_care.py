@@ -7,33 +7,30 @@ from app.core.database import get_supabase
 
 class CustomerCareTools:
     """Tools for customer support operations"""
-    
+
     def __init__(self, user_id: str):
         self.user_id = user_id
-    
+
     async def _get_zendesk_client(self) -> Dict[str, str]:
         """Get authenticated Zendesk client info"""
         from app.api.integrations import get_zendesk_client
+
         return await get_zendesk_client(self.user_id)
-    
+
     async def _make_zendesk_request(
-        self,
-        method: str,
-        endpoint: str,
-        params: Optional[Dict] = None,
-        data: Optional[Dict] = None
+        self, method: str, endpoint: str, params: Optional[Dict] = None, data: Optional[Dict] = None
     ) -> Dict[str, Any]:
         """Make authenticated request to Zendesk API"""
         try:
             client_info = await self._get_zendesk_client()
             base_url = f"https://{client_info['subdomain']}.zendesk.com/api/v2"
             url = f"{base_url}/{endpoint}"
-            
+
             headers = {
                 "Authorization": f"Bearer {client_info['access_token']}",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             }
-            
+
             async with httpx.AsyncClient() as client:
                 if method == "GET":
                     response = await client.get(url, headers=headers, params=params)
@@ -43,15 +40,20 @@ class CustomerCareTools:
                     response = await client.put(url, headers=headers, json=data)
                 else:
                     raise ValueError(f"Unsupported method: {method}")
-            
+
             if response.status_code in (200, 201):
                 return response.json()
             else:
-                return {"error": f"Zendesk API error: {response.status_code}", "details": response.text}
+                return {
+                    "error": f"Zendesk API error: {response.status_code}",
+                    "details": response.text,
+                }
         except Exception as e:
             return await self._get_mock_tickets(endpoint, method, data)
-    
-    async def _get_mock_tickets(self, endpoint: str, method: str, data: Optional[Dict] = None) -> Dict[str, Any]:
+
+    async def _get_mock_tickets(
+        self, endpoint: str, method: str, data: Optional[Dict] = None
+    ) -> Dict[str, Any]:
         """Return mock data for development/demo purposes"""
         if "tickets" in endpoint and method == "GET":
             return {
@@ -65,7 +67,7 @@ class CustomerCareTools:
                         "requester": {"name": "John Smith", "email": "john.smith@example.com"},
                         "created_at": (datetime.utcnow() - timedelta(hours=2)).isoformat(),
                         "updated_at": (datetime.utcnow() - timedelta(hours=1)).isoformat(),
-                        "tags": ["login", "account-access", "urgent"]
+                        "tags": ["login", "account-access", "urgent"],
                     },
                     {
                         "id": 102,
@@ -76,7 +78,7 @@ class CustomerCareTools:
                         "requester": {"name": "Sarah Johnson", "email": "sarah.j@example.com"},
                         "created_at": (datetime.utcnow() - timedelta(hours=5)).isoformat(),
                         "updated_at": (datetime.utcnow() - timedelta(hours=4)).isoformat(),
-                        "tags": ["billing", "subscription", "refund"]
+                        "tags": ["billing", "subscription", "refund"],
                     },
                     {
                         "id": 103,
@@ -87,7 +89,7 @@ class CustomerCareTools:
                         "requester": {"name": "Mike Wilson", "email": "mike.w@example.com"},
                         "created_at": (datetime.utcnow() - timedelta(days=1)).isoformat(),
                         "updated_at": (datetime.utcnow() - timedelta(days=1)).isoformat(),
-                        "tags": ["feature-request", "ui"]
+                        "tags": ["feature-request", "ui"],
                     },
                     {
                         "id": 104,
@@ -98,7 +100,7 @@ class CustomerCareTools:
                         "requester": {"name": "Emily Chen", "email": "emily.c@example.com"},
                         "created_at": (datetime.utcnow() - timedelta(hours=3)).isoformat(),
                         "updated_at": (datetime.utcnow() - timedelta(hours=2)).isoformat(),
-                        "tags": ["bug", "upload", "crash"]
+                        "tags": ["bug", "upload", "crash"],
                     },
                     {
                         "id": 105,
@@ -109,70 +111,71 @@ class CustomerCareTools:
                         "requester": {"name": "David Lee", "email": "david.lee@example.com"},
                         "created_at": (datetime.utcnow() - timedelta(hours=6)).isoformat(),
                         "updated_at": (datetime.utcnow() - timedelta(hours=5)).isoformat(),
-                        "tags": ["how-to", "export", "data"]
-                    }
+                        "tags": ["how-to", "export", "data"],
+                    },
                 ],
-                "count": 5
+                "count": 5,
             }
         return {"status": "ok", "mock": True}
-    
+
     async def get_tickets(
-        self,
-        status: Optional[str] = None,
-        priority: Optional[str] = None,
-        max_results: int = 20
+        self, status: Optional[str] = None, priority: Optional[str] = None, max_results: int = 20
     ) -> Dict[str, Any]:
         """Fetch support tickets with optional filtering"""
         params = {"per_page": min(max_results, 100)}
-        
+
         query_parts = []
         if status:
             query_parts.append(f"status:{status}")
         if priority:
             query_parts.append(f"priority:{priority}")
-        
+
         if query_parts:
             params["query"] = " ".join(query_parts)
-        
+
         result = await self._make_zendesk_request("GET", "tickets.json", params=params)
-        
+
         if "error" in result:
             return result
-        
+
         tickets = result.get("tickets", [])
-        
+
         parsed = []
         for t in tickets[:max_results]:
-            parsed.append({
-                "id": t.get("id"),
-                "subject": t.get("subject"),
-                "description": (t.get("description") or "")[:500],
-                "status": t.get("status"),
-                "priority": t.get("priority"),
-                "requester": t.get("requester", {}),
-                "created_at": t.get("created_at"),
-                "updated_at": t.get("updated_at"),
-                "tags": t.get("tags", [])
-            })
-        
+            parsed.append(
+                {
+                    "id": t.get("id"),
+                    "subject": t.get("subject"),
+                    "description": (t.get("description") or "")[:500],
+                    "status": t.get("status"),
+                    "priority": t.get("priority"),
+                    "requester": t.get("requester", {}),
+                    "created_at": t.get("created_at"),
+                    "updated_at": t.get("updated_at"),
+                    "tags": t.get("tags", []),
+                }
+            )
+
         return {
             "tickets": parsed,
             "count": len(parsed),
-            "filters": {"status": status, "priority": priority}
+            "filters": {"status": status, "priority": priority},
         }
-    
+
     async def get_ticket_by_id(self, ticket_id: str) -> Dict[str, Any]:
         """Get detailed information about a specific ticket"""
         result = await self._make_zendesk_request("GET", f"tickets/{ticket_id}.json")
-        
+
         if "error" in result:
             return result
-        
+
         ticket = result.get("ticket", {})
-        
-        comments_result = await self._make_zendesk_request("GET", f"tickets/{ticket_id}/comments.json")
+
+        comments_result = await self._make_zendesk_request(
+            "GET", f"tickets/{ticket_id}/comments.json"
+        )
         comments = comments_result.get("comments", []) if "error" not in comments_result else []
-        
+
         return {
             "ticket": {
                 "id": ticket.get("id"),
@@ -183,7 +186,7 @@ class CustomerCareTools:
                 "requester": ticket.get("requester", {}),
                 "created_at": ticket.get("created_at"),
                 "updated_at": ticket.get("updated_at"),
-                "tags": ticket.get("tags", [])
+                "tags": ticket.get("tags", []),
             },
             "conversation": [
                 {
@@ -191,121 +194,118 @@ class CustomerCareTools:
                     "body": (c.get("body") or "")[:1000],
                     "author": c.get("author", {}),
                     "created_at": c.get("created_at"),
-                    "public": c.get("public", True)
+                    "public": c.get("public", True),
                 }
                 for c in comments
-            ]
+            ],
         }
-    
+
     async def answer_ticket(
         self,
         ticket_id: str,
         response: str,
         internal_note: bool = False,
-        set_status: Optional[str] = None
+        set_status: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Post a response to a support ticket"""
-        comment_data = {
-            "ticket": {
-                "comment": {
-                    "body": response,
-                    "public": not internal_note
-                }
-            }
-        }
-        
+        comment_data = {"ticket": {"comment": {"body": response, "public": not internal_note}}}
+
         if set_status:
             comment_data["ticket"]["status"] = set_status
-        
-        result = await self._make_zendesk_request("PUT", f"tickets/{ticket_id}.json", data=comment_data)
-        
+
+        result = await self._make_zendesk_request(
+            "PUT", f"tickets/{ticket_id}.json", data=comment_data
+        )
+
         if "error" in result:
             return result
-        
+
         supabase = get_supabase()
-        supabase.table("ticket_responses").insert({
-            "user_id": self.user_id,
-            "ticket_id": str(ticket_id),
-            "response": response[:2000],
-            "is_internal": internal_note,
-            "new_status": set_status,
-            "created_at": datetime.utcnow().isoformat()
-        }).execute()
-        
+        supabase.table("ticket_responses").insert(
+            {
+                "user_id": self.user_id,
+                "ticket_id": str(ticket_id),
+                "response": response[:2000],
+                "is_internal": internal_note,
+                "new_status": set_status,
+                "created_at": datetime.utcnow().isoformat(),
+            }
+        ).execute()
+
         return {
             "ticket_id": ticket_id,
             "status": "response_posted",
             "is_internal": internal_note,
             "new_status": set_status,
-            "message": "Response posted successfully"
+            "message": "Response posted successfully",
         }
-    
+
     async def escalate_ticket(
         self,
         ticket_id: str,
         reason: str,
         escalation_level: str = "tier2",
-        assign_to: Optional[str] = None
+        assign_to: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Escalate a ticket to a higher support tier"""
         internal_note = f"[ESCALATION - {escalation_level.upper()}]\nReason: {reason}"
-        
+
         if assign_to:
             internal_note += f"\nAssigned to: {assign_to}"
-        
+
         update_data = {
             "ticket": {
                 "priority": "high",
                 "tags": [f"escalated-{escalation_level}"],
-                "comment": {
-                    "body": internal_note,
-                    "public": False
-                }
+                "comment": {"body": internal_note, "public": False},
             }
         }
-        
-        result = await self._make_zendesk_request("PUT", f"tickets/{ticket_id}.json", data=update_data)
-        
+
+        result = await self._make_zendesk_request(
+            "PUT", f"tickets/{ticket_id}.json", data=update_data
+        )
+
         if "error" in result:
             return result
-        
+
         supabase = get_supabase()
-        supabase.table("ticket_escalations").insert({
-            "user_id": self.user_id,
-            "ticket_id": str(ticket_id),
-            "reason": reason,
-            "escalation_level": escalation_level,
-            "assigned_to": assign_to,
-            "created_at": datetime.utcnow().isoformat()
-        }).execute()
-        
+        supabase.table("ticket_escalations").insert(
+            {
+                "user_id": self.user_id,
+                "ticket_id": str(ticket_id),
+                "reason": reason,
+                "escalation_level": escalation_level,
+                "assigned_to": assign_to,
+                "created_at": datetime.utcnow().isoformat(),
+            }
+        ).execute()
+
         return {
             "ticket_id": ticket_id,
             "status": "escalated",
             "escalation_level": escalation_level,
             "reason": reason,
-            "message": f"Ticket escalated to {escalation_level}"
+            "message": f"Ticket escalated to {escalation_level}",
         }
-    
+
     async def generate_response(
-        self,
-        ticket_id: str,
-        response_type: str = "helpful",
-        include_kb_link: bool = False
+        self, ticket_id: str, response_type: str = "helpful", include_kb_link: bool = False
     ) -> Dict[str, Any]:
         """Generate an appropriate response based on ticket content"""
         ticket_result = await self.get_ticket_by_id(ticket_id)
-        
+
         if "error" in ticket_result:
             return ticket_result
-        
+
         ticket = ticket_result.get("ticket", {})
         subject = ticket.get("subject", "").lower()
         description = ticket.get("description", "").lower()
         requester = ticket.get("requester", {})
         customer_name = requester.get("name", "").split()[0] if requester.get("name") else "there"
-        
-        if any(word in subject + description for word in ["login", "password", "access", "credentials"]):
+
+        if any(
+            word in subject + description for word in ["login", "password", "access", "credentials"]
+        ):
             category = "account_access"
             response = f"""Hi {customer_name},
 
@@ -323,7 +323,10 @@ If you're still having trouble after trying these steps, please let me know and 
 Best regards,
 Support Team"""
 
-        elif any(word in subject + description for word in ["billing", "charge", "refund", "payment", "invoice"]):
+        elif any(
+            word in subject + description
+            for word in ["billing", "charge", "refund", "payment", "invoice"]
+        ):
             category = "billing"
             response = f"""Hi {customer_name},
 
@@ -340,7 +343,10 @@ Once I have this information, I'll be able to investigate and process any necess
 Best regards,
 Support Team"""
 
-        elif any(word in subject + description for word in ["bug", "crash", "error", "broken", "not working"]):
+        elif any(
+            word in subject + description
+            for word in ["bug", "crash", "error", "broken", "not working"]
+        ):
             category = "technical"
             response = f"""Hi {customer_name},
 
@@ -364,7 +370,10 @@ I'll make sure this gets the attention it needs. Thank you for your patience!
 Best regards,
 Support Team"""
 
-        elif any(word in subject + description for word in ["feature", "request", "suggestion", "would like", "wish"]):
+        elif any(
+            word in subject + description
+            for word in ["feature", "request", "suggestion", "would like", "wish"]
+        ):
             category = "feature_request"
             response = f"""Hi {customer_name},
 
@@ -392,7 +401,7 @@ Support Team"""
 
         if include_kb_link:
             response += "\n\nYou might also find our Help Center useful: [Help Center Link]"
-        
+
         return {
             "ticket_id": ticket_id,
             "category": category,
@@ -400,51 +409,52 @@ Support Team"""
             "response_type": response_type,
             "customer_name": customer_name,
             "status": "draft_generated",
-            "message": "Response generated. Please review before sending."
+            "message": "Response generated. Please review before sending.",
         }
-    
-    async def track_satisfaction(
-        self,
-        days_back: int = 30
-    ) -> Dict[str, Any]:
+
+    async def track_satisfaction(self, days_back: int = 30) -> Dict[str, Any]:
         """Get customer satisfaction metrics"""
         supabase = get_supabase()
-        
+
         cutoff = datetime.utcnow() - timedelta(days=days_back)
-        
-        responses = supabase.table("ticket_responses") \
-            .select("*") \
-            .eq("user_id", self.user_id) \
-            .gte("created_at", cutoff.isoformat()) \
+
+        responses = (
+            supabase.table("ticket_responses")
+            .select("*")
+            .eq("user_id", self.user_id)
+            .gte("created_at", cutoff.isoformat())
             .execute()
-        
-        escalations = supabase.table("ticket_escalations") \
-            .select("*") \
-            .eq("user_id", self.user_id) \
-            .gte("created_at", cutoff.isoformat()) \
+        )
+
+        escalations = (
+            supabase.table("ticket_escalations")
+            .select("*")
+            .eq("user_id", self.user_id)
+            .gte("created_at", cutoff.isoformat())
             .execute()
-        
+        )
+
         responses_data = responses.data or []
         escalations_data = escalations.data or []
-        
+
         total_responses = len(responses_data)
         total_escalations = len(escalations_data)
-        
+
         escalation_rate = (total_escalations / total_responses * 100) if total_responses > 0 else 0
-        
+
         return {
             "period_days": days_back,
             "metrics": {
                 "total_tickets_handled": total_responses,
                 "total_escalations": total_escalations,
-                "escalation_rate": round(escalation_rate, 1)
+                "escalation_rate": round(escalation_rate, 1),
             },
             "trends": {
                 "escalations_by_level": self._count_by_field(escalations_data, "escalation_level")
             },
-            "generated_at": datetime.utcnow().isoformat()
+            "generated_at": datetime.utcnow().isoformat(),
         }
-    
+
     def _count_by_field(self, data: List[Dict], field: str) -> Dict[str, int]:
         """Helper to count occurrences by field value"""
         counts = {}
@@ -452,26 +462,26 @@ Support Team"""
             value = item.get(field, "unknown")
             counts[value] = counts.get(value, 0) + 1
         return counts
-    
+
     async def get_pending_tickets(self) -> Dict[str, Any]:
         """Get tickets that need attention"""
         result = await self.get_tickets(status="open", max_results=50)
-        
+
         if "error" in result:
             return result
-        
+
         tickets = result.get("tickets", [])
-        
+
         high_priority = []
         aging = []
         normal = []
-        
+
         now = datetime.utcnow()
-        
+
         for ticket in tickets:
             priority = ticket.get("priority", "normal")
             created_str = ticket.get("created_at", "")
-            
+
             hours_old = 0
             if created_str:
                 try:
@@ -479,43 +489,47 @@ Support Team"""
                     hours_old = (now - created.replace(tzinfo=None)).total_seconds() / 3600
                 except (ValueError, TypeError):
                     pass
-            
+
             ticket["hours_old"] = round(hours_old, 1)
-            
+
             if priority == "high" or priority == "urgent":
                 high_priority.append(ticket)
             elif hours_old > 24:
                 aging.append(ticket)
             else:
                 normal.append(ticket)
-        
+
         return {
             "summary": {
                 "total_pending": len(tickets),
                 "high_priority": len(high_priority),
                 "aging_over_24h": len(aging),
-                "normal": len(normal)
+                "normal": len(normal),
             },
             "high_priority_tickets": high_priority[:10],
             "aging_tickets": aging[:10],
-            "recommendations": self._generate_recommendations(high_priority, aging)
+            "recommendations": self._generate_recommendations(high_priority, aging),
         }
-    
+
     def _generate_recommendations(self, high_priority: List, aging: List) -> List[str]:
         """Generate actionable recommendations"""
         recs = []
-        
+
         if len(high_priority) > 5:
-            recs.append(f"URGENT: {len(high_priority)} high-priority tickets need immediate attention")
+            recs.append(
+                f"URGENT: {len(high_priority)} high-priority tickets need immediate attention"
+            )
         elif len(high_priority) > 0:
             recs.append(f"Address {len(high_priority)} high-priority ticket(s) first")
-        
+
         if len(aging) > 10:
-            recs.append(f"WARNING: {len(aging)} tickets are over 24 hours old - consider escalating")
+            recs.append(
+                f"WARNING: {len(aging)} tickets are over 24 hours old - consider escalating"
+            )
         elif len(aging) > 0:
             recs.append(f"Follow up on {len(aging)} aging ticket(s) to maintain SLA")
-        
+
         if not recs:
             recs.append("Ticket queue is healthy - continue monitoring")
-        
+
         return recs

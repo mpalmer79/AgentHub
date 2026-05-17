@@ -12,7 +12,7 @@ def get_customer_care_schema() -> List[Dict[str, Any]]:
                 "status": string_prop("Filter by status: open, pending, solved, closed"),
                 "priority": string_prop("Filter by priority: low, normal, high, urgent"),
                 "max_results": integer_prop("Maximum tickets to return (default: 20)"),
-            }
+            },
         ),
         create_tool_schema(
             name="get_ticket_by_id",
@@ -20,7 +20,7 @@ def get_customer_care_schema() -> List[Dict[str, Any]]:
             properties={
                 "ticket_id": string_prop("The ticket ID to retrieve"),
             },
-            required=["ticket_id"]
+            required=["ticket_id"],
         ),
         create_tool_schema(
             name="answer_ticket",
@@ -28,10 +28,12 @@ def get_customer_care_schema() -> List[Dict[str, Any]]:
             properties={
                 "ticket_id": string_prop("The ticket ID to respond to"),
                 "response": string_prop("The response message"),
-                "internal_note": boolean_prop("If true, post as internal note (not visible to customer)"),
+                "internal_note": boolean_prop(
+                    "If true, post as internal note (not visible to customer)"
+                ),
                 "set_status": string_prop("Optionally change ticket status: open, pending, solved"),
             },
-            required=["ticket_id", "response"]
+            required=["ticket_id", "response"],
         ),
         create_tool_schema(
             name="escalate_ticket",
@@ -39,10 +41,12 @@ def get_customer_care_schema() -> List[Dict[str, Any]]:
             properties={
                 "ticket_id": string_prop("The ticket ID to escalate"),
                 "reason": string_prop("Reason for escalation"),
-                "escalation_level": string_prop("Escalation level: tier2, tier3, manager, engineering"),
+                "escalation_level": string_prop(
+                    "Escalation level: tier2, tier3, manager, engineering"
+                ),
                 "assign_to": string_prop("Optional: specific person to assign to"),
             },
-            required=["ticket_id", "reason"]
+            required=["ticket_id", "reason"],
         ),
         create_tool_schema(
             name="generate_response",
@@ -52,18 +56,18 @@ def get_customer_care_schema() -> List[Dict[str, Any]]:
                 "response_type": string_prop("Response tone: helpful, apologetic, informative"),
                 "include_kb_link": boolean_prop("Include link to help center"),
             },
-            required=["ticket_id"]
+            required=["ticket_id"],
         ),
         create_tool_schema(
             name="track_satisfaction",
             description="Get customer satisfaction metrics and trends",
             properties={
                 "days_back": integer_prop("Number of days to analyze (default: 30)"),
-            }
+            },
         ),
         create_tool_schema(
             name="get_pending_tickets",
             description="Get tickets that need attention, categorized by priority and age",
-            properties={}
+            properties={},
         ),
     ]

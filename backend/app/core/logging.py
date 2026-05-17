@@ -4,6 +4,7 @@ Emits one line of JSON per log record so logs are searchable in any
 aggregator (Datadog, Loki, CloudWatch). Use `get_logger(__name__)` and
 pass structured fields via `extra={"key": value}`.
 """
+
 from __future__ import annotations
 
 import json
@@ -13,10 +14,29 @@ import time
 from typing import Any
 
 _RESERVED = {
-    "name", "msg", "args", "levelname", "levelno", "pathname", "filename",
-    "module", "exc_info", "exc_text", "stack_info", "lineno", "funcName",
-    "created", "msecs", "relativeCreated", "thread", "threadName",
-    "processName", "process", "message", "asctime", "taskName",
+    "name",
+    "msg",
+    "args",
+    "levelname",
+    "levelno",
+    "pathname",
+    "filename",
+    "module",
+    "exc_info",
+    "exc_text",
+    "stack_info",
+    "lineno",
+    "funcName",
+    "created",
+    "msecs",
+    "relativeCreated",
+    "thread",
+    "threadName",
+    "processName",
+    "process",
+    "message",
+    "asctime",
+    "taskName",
 }
 
 
@@ -24,7 +44,7 @@ class JsonFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         payload: dict[str, Any] = {
             "ts": time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime(record.created))
-                  + f".{int(record.msecs):03d}Z",
+            + f".{int(record.msecs):03d}Z",
             "level": record.levelname,
             "logger": record.name,
             "msg": record.getMessage(),

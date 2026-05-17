@@ -66,7 +66,7 @@ class Settings(BaseSettings):
     # CORS
     CORS_ORIGINS: List[str] = os.getenv(
         "CORS_ORIGINS",
-        "http://localhost:3000,http://localhost:5173,https://agent-hub-amber.vercel.app"
+        "http://localhost:3000,http://localhost:5173,https://agent-hub-amber.vercel.app",
     ).split(",")
 
     class Config:
@@ -112,9 +112,7 @@ class Settings(BaseSettings):
             if not value:
                 missing.append(name)
         if missing:
-            raise RuntimeError(
-                f"Missing required environment variables: {', '.join(missing)}"
-            )
+            raise RuntimeError(f"Missing required environment variables: {', '.join(missing)}")
 
 
 settings = Settings()

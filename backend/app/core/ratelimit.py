@@ -3,6 +3,7 @@
 Lazy-imported so the import failure surfaces only if rate limiting is
 actually wired in (helpful for unit tests that skip middleware).
 """
+
 from __future__ import annotations
 
 from slowapi import Limiter

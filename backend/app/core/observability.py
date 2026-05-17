@@ -2,6 +2,7 @@
 
 No-op when SENTRY_DSN is unset, so local and CI runs stay clean.
 """
+
 from __future__ import annotations
 
 from app.core.config import settings

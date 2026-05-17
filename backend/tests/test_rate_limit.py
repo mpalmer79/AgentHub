@@ -1,4 +1,5 @@
 """Verify auth endpoints are rate-limited."""
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -19,9 +20,13 @@ def test_signin_rate_limit_kicks_in(client):
     limit = int(settings.RATE_LIMIT_AUTH.split("/")[0])
     last_status = None
     for _ in range(limit + 1):
-        resp = client.post("/api/auth/signin", json={
-            "email": "user@example.com", "password": "wrong",
-        })
+        resp = client.post(
+            "/api/auth/signin",
+            json={
+                "email": "user@example.com",
+                "password": "wrong",
+            },
+        )
         last_status = resp.status_code
     assert last_status == 429
 
@@ -30,10 +35,13 @@ def test_signup_rate_limit_kicks_in(client):
     limit = int(settings.RATE_LIMIT_AUTH.split("/")[0])
     last_status = None
     for _ in range(limit + 1):
-        resp = client.post("/api/auth/signup", json={
-            "email": "new@example.com",
-            "password": "abc12345",
-            "full_name": "New User",
-        })
+        resp = client.post(
+            "/api/auth/signup",
+            json={
+                "email": "new@example.com",
+                "password": "abc12345",
+                "full_name": "New User",
+            },
+        )
         last_status = resp.status_code
     assert last_status == 429

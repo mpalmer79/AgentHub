@@ -36,26 +36,30 @@ class UserResponse(BaseModel):
 async def sign_up(request: Request, payload: SignUpRequest):
     try:
         supabase = get_supabase()
-        auth_response = supabase.auth.sign_up({
-            "email": payload.email,
-            "password": payload.password,
-            "options": {
-                "data": {
-                    "full_name": payload.full_name,
-                    "company_name": payload.company_name,
-                }
-            },
-        })
+        auth_response = supabase.auth.sign_up(
+            {
+                "email": payload.email,
+                "password": payload.password,
+                "options": {
+                    "data": {
+                        "full_name": payload.full_name,
+                        "company_name": payload.company_name,
+                    }
+                },
+            }
+        )
 
         if not auth_response.user:
             raise HTTPException(status_code=400, detail="Failed to create account")
 
-        supabase.table("users").insert({
-            "id": auth_response.user.id,
-            "email": payload.email,
-            "full_name": payload.full_name,
-            "company_name": payload.company_name,
-        }).execute()
+        supabase.table("users").insert(
+            {
+                "id": auth_response.user.id,
+                "email": payload.email,
+                "full_name": payload.full_name,
+                "company_name": payload.company_name,
+            }
+        ).execute()
 
         return {
             "message": "Account created successfully",
@@ -75,10 +79,12 @@ async def sign_up(request: Request, payload: SignUpRequest):
 async def sign_in(request: Request, payload: SignInRequest):
     try:
         supabase = get_supabase()
-        auth_response = supabase.auth.sign_in_with_password({
-            "email": payload.email,
-            "password": payload.password,
-        })
+        auth_response = supabase.auth.sign_in_with_password(
+            {
+                "email": payload.email,
+                "password": payload.password,
+            }
+        )
 
         if not auth_response.session:
             raise HTTPException(status_code=401, detail="Invalid credentials")
