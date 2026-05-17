@@ -1,6 +1,7 @@
 """
 Tests for the tasks API endpoints.
 """
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -13,7 +14,6 @@ def client():
 
 
 class TestTasksEndpoints:
-
     def test_pending_tasks_requires_auth(self, client):
         response = client.get("/api/tasks/pending")
         assert response.status_code == 401

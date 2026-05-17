@@ -3,6 +3,7 @@ Tests for the tool executor.
 
 Tests tool routing and execution for different agent types.
 """
+
 import pytest
 from unittest.mock import MagicMock, AsyncMock
 
@@ -45,29 +46,21 @@ class TestBookkeeperToolExecution:
         mock_qb_tools = MagicMock()
         mock_qb_tools.get_transactions = AsyncMock(return_value={"transactions": []})
 
-        executor = ToolExecutor(
-            AgentType.BOOKKEEPER,
-            {"quickbooks": mock_qb_tools}
-        )
+        executor = ToolExecutor(AgentType.BOOKKEEPER, {"quickbooks": mock_qb_tools})
 
         result = await executor.execute(
-            "get_transactions",
-            {"start_date": "2026-01-01", "end_date": "2026-01-31"}
+            "get_transactions", {"start_date": "2026-01-01", "end_date": "2026-01-31"}
         )
 
         mock_qb_tools.get_transactions.assert_called_once_with(
-            start_date="2026-01-01",
-            end_date="2026-01-31"
+            start_date="2026-01-01", end_date="2026-01-31"
         )
 
     @pytest.mark.asyncio
     async def test_unknown_tool_returns_error(self):
         """Unknown tool name returns error."""
         mock_qb_tools = MagicMock()
-        executor = ToolExecutor(
-            AgentType.BOOKKEEPER,
-            {"quickbooks": mock_qb_tools}
-        )
+        executor = ToolExecutor(AgentType.BOOKKEEPER, {"quickbooks": mock_qb_tools})
 
         result = await executor.execute("nonexistent_tool", {})
         assert "error" in result
@@ -91,10 +84,7 @@ class TestInboxCommanderToolExecution:
         mock_gmail = MagicMock()
         mock_gmail.get_emails = AsyncMock(return_value={"emails": []})
 
-        executor = ToolExecutor(
-            AgentType.INBOX_COMMANDER,
-            {"gmail": mock_gmail}
-        )
+        executor = ToolExecutor(AgentType.INBOX_COMMANDER, {"gmail": mock_gmail})
 
         result = await executor.execute("get_emails", {"limit": 10})
 
@@ -106,14 +96,10 @@ class TestInboxCommanderToolExecution:
         mock_gmail = MagicMock()
         mock_gmail.send_email = AsyncMock(return_value={"sent": True})
 
-        executor = ToolExecutor(
-            AgentType.INBOX_COMMANDER,
-            {"gmail": mock_gmail}
-        )
+        executor = ToolExecutor(AgentType.INBOX_COMMANDER, {"gmail": mock_gmail})
 
         result = await executor.execute(
-            "send_email",
-            {"to": "test@test.com", "subject": "Hi", "body": "Hello"}
+            "send_email", {"to": "test@test.com", "subject": "Hi", "body": "Hello"}
         )
 
         mock_gmail.send_email.assert_called_once()
@@ -128,14 +114,10 @@ class TestAppointmentToolExecution:
         mock_calendar = MagicMock()
         mock_calendar.book_appointment = AsyncMock(return_value={"event_id": "123"})
 
-        executor = ToolExecutor(
-            AgentType.APPOINTMENT,
-            {"calendar": mock_calendar}
-        )
+        executor = ToolExecutor(AgentType.APPOINTMENT, {"calendar": mock_calendar})
 
         result = await executor.execute(
-            "book_appointment",
-            {"title": "Meeting", "start": "2026-01-15T10:00:00"}
+            "book_appointment", {"title": "Meeting", "start": "2026-01-15T10:00:00"}
         )
 
         mock_calendar.book_appointment.assert_called_once()
@@ -146,14 +128,10 @@ class TestAppointmentToolExecution:
         mock_calendar = MagicMock()
         mock_calendar.find_available_slots = AsyncMock(return_value={"slots": []})
 
-        executor = ToolExecutor(
-            AgentType.APPOINTMENT,
-            {"calendar": mock_calendar}
-        )
+        executor = ToolExecutor(AgentType.APPOINTMENT, {"calendar": mock_calendar})
 
         result = await executor.execute(
-            "find_available_slots",
-            {"date": "2026-01-15", "duration_minutes": 30}
+            "find_available_slots", {"date": "2026-01-15", "duration_minutes": 30}
         )
 
         mock_calendar.find_available_slots.assert_called_once()

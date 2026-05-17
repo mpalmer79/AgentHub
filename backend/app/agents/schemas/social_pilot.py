@@ -15,7 +15,7 @@ def get_social_pilot_schema() -> List[Dict[str, Any]]:
                 "link": string_prop("Optional link to include"),
                 "hashtags": array_string_prop("List of hashtags to add"),
             },
-            required=["content", "platform"]
+            required=["content", "platform"],
         ),
         create_tool_schema(
             name="schedule_content",
@@ -27,7 +27,7 @@ def get_social_pilot_schema() -> List[Dict[str, Any]]:
                 "media_url": string_prop("Optional media URL"),
                 "hashtags": array_string_prop("Hashtags to include"),
             },
-            required=["content", "platform", "scheduled_time"]
+            required=["content", "platform", "scheduled_time"],
         ),
         create_tool_schema(
             name="get_scheduled_posts",
@@ -35,7 +35,7 @@ def get_social_pilot_schema() -> List[Dict[str, Any]]:
             properties={
                 "platform": string_prop("Filter by platform"),
                 "status": string_prop("Filter by status (default: scheduled)"),
-            }
+            },
         ),
         create_tool_schema(
             name="respond_to_comment",
@@ -46,7 +46,7 @@ def get_social_pilot_schema() -> List[Dict[str, Any]]:
                 "response": string_prop("The response text"),
                 "platform": string_prop("Platform (default: facebook)"),
             },
-            required=["post_id", "comment_id", "response"]
+            required=["post_id", "comment_id", "response"],
         ),
         create_tool_schema(
             name="get_comments",
@@ -55,7 +55,7 @@ def get_social_pilot_schema() -> List[Dict[str, Any]]:
                 "post_id": string_prop("Specific post ID (optional)"),
                 "platform": string_prop("Platform (default: facebook)"),
                 "unanswered_only": boolean_prop("Only show unanswered comments"),
-            }
+            },
         ),
         create_tool_schema(
             name="generate_content_ideas",
@@ -66,7 +66,7 @@ def get_social_pilot_schema() -> List[Dict[str, Any]]:
                 "tone": string_prop("Tone: professional, casual, humorous, inspirational"),
                 "count": integer_prop("Number of ideas to generate (default: 5)"),
             },
-            required=["topic"]
+            required=["topic"],
         ),
         create_tool_schema(
             name="generate_report",
@@ -74,7 +74,7 @@ def get_social_pilot_schema() -> List[Dict[str, Any]]:
             properties={
                 "platform": string_prop("Platform or 'all' (default: all)"),
                 "days_back": integer_prop("Days to analyze (default: 30)"),
-            }
+            },
         ),
         create_tool_schema(
             name="get_analytics",
@@ -83,6 +83,6 @@ def get_social_pilot_schema() -> List[Dict[str, Any]]:
                 "platform": string_prop("Platform to analyze"),
                 "metric_type": string_prop("Type: engagement, reach, followers"),
             },
-            required=["platform"]
+            required=["platform"],
         ),
     ]

@@ -124,6 +124,25 @@ Full audit trail of every action. Know exactly what your AI agents did, when, an
 
 ---
 
+## 🧑‍💻 For Engineers
+
+- **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)** — local setup, running tests, adding a new agent
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — system diagram, request lifecycle, failure model, data model
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** — branch/PR workflow, what CI enforces
+- **[backend/evals/README.md](backend/evals/README.md)** — agent regression test harness
+
+Quick start:
+
+```bash
+make install   # backend + frontend deps
+make ready     # run everything CI runs
+make dev       # backend API on :8000
+make worker    # agent task worker
+make frontend-dev
+```
+
+---
+
 ## 🛠️ Tech Stack
 
 **Frontend**

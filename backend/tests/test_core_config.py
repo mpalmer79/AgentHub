@@ -1,4 +1,5 @@
 """Tests for core configuration module."""
+
 import pytest
 from app.core.config import settings, Settings
 

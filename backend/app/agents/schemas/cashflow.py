@@ -11,7 +11,7 @@ def get_cashflow_schema() -> List[Dict[str, Any]]:
             properties={
                 "days_ahead": integer_prop("Number of days to project (default: 90)"),
                 "include_recurring": boolean_prop("Include recurring transactions (default: true)"),
-            }
+            },
         ),
         create_tool_schema(
             name="prioritize_collections",
@@ -19,14 +19,16 @@ def get_cashflow_schema() -> List[Dict[str, Any]]:
             properties={
                 "min_amount": number_prop("Minimum amount to include (default: 100)"),
                 "days_overdue_threshold": integer_prop("Days overdue threshold (default: 30)"),
-            }
+            },
         ),
         create_tool_schema(
             name="optimize_payments",
             description="Optimize payment timing to maximize cash position",
             properties={
-                "available_cash": number_prop("Available cash for payments (auto-detected if not provided)"),
-            }
+                "available_cash": number_prop(
+                    "Available cash for payments (auto-detected if not provided)"
+                ),
+            },
         ),
         create_tool_schema(
             name="send_invoice_reminder",
@@ -38,7 +40,13 @@ def get_cashflow_schema() -> List[Dict[str, Any]]:
                 "amount": number_prop("Amount due"),
                 "days_overdue": integer_prop("Number of days overdue"),
             },
-            required=["customer_name", "customer_email", "invoice_number", "amount", "days_overdue"]
+            required=[
+                "customer_name",
+                "customer_email",
+                "invoice_number",
+                "amount",
+                "days_overdue",
+            ],
         ),
         create_tool_schema(
             name="score_customer_risk",
@@ -46,11 +54,11 @@ def get_cashflow_schema() -> List[Dict[str, Any]]:
             properties={
                 "customer_name": string_prop("Customer name to analyze"),
             },
-            required=["customer_name"]
+            required=["customer_name"],
         ),
         create_tool_schema(
             name="get_cash_alerts",
             description="Get current cash flow alerts and warnings",
-            properties={}
+            properties={},
         ),
     ]

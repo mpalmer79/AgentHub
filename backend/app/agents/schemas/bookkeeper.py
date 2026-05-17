@@ -13,7 +13,7 @@ def get_bookkeeper_schema() -> List[Dict[str, Any]]:
                 "end_date": string_prop("End date in YYYY-MM-DD format"),
                 "account_id": string_prop("Optional: Filter by specific account ID"),
             },
-            required=["start_date", "end_date"]
+            required=["start_date", "end_date"],
         ),
         create_tool_schema(
             name="categorize_transaction",
@@ -23,14 +23,14 @@ def get_bookkeeper_schema() -> List[Dict[str, Any]]:
                 "category": string_prop("The category/account to assign"),
                 "memo": string_prop("Optional memo for the categorization"),
             },
-            required=["transaction_id", "category"]
+            required=["transaction_id", "category"],
         ),
         create_tool_schema(
             name="get_accounts",
             description="Get list of accounts from QuickBooks",
             properties={
                 "account_type": string_prop("Optional: Filter by account type"),
-            }
+            },
         ),
         create_tool_schema(
             name="get_account_balance",
@@ -38,7 +38,7 @@ def get_bookkeeper_schema() -> List[Dict[str, Any]]:
             properties={
                 "account_id": string_prop("The account ID to check"),
             },
-            required=["account_id"]
+            required=["account_id"],
         ),
         create_tool_schema(
             name="create_expense_report",
@@ -48,7 +48,7 @@ def get_bookkeeper_schema() -> List[Dict[str, Any]]:
                 "end_date": string_prop("End date in YYYY-MM-DD format"),
                 "group_by": string_prop("Group by: 'category', 'vendor', 'month'"),
             },
-            required=["start_date", "end_date"]
+            required=["start_date", "end_date"],
         ),
         create_tool_schema(
             name="flag_for_review",
@@ -58,6 +58,6 @@ def get_bookkeeper_schema() -> List[Dict[str, Any]]:
                 "reason": string_prop("Reason for flagging"),
                 "suggested_action": string_prop("Suggested action for the reviewer"),
             },
-            required=["transaction_id", "reason"]
+            required=["transaction_id", "reason"],
         ),
     ]

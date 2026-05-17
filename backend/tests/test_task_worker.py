@@ -1,6 +1,7 @@
 """
 Tests for the task worker.
 """
+
 import pytest
 from datetime import datetime, timezone
 
@@ -13,6 +14,7 @@ from app.agents.registry import AgentType
 
 
 # === Fake Supabase (defined inline) ===
+
 
 class FakeSupabaseResponse:
     def __init__(self, data=None):
@@ -27,21 +29,32 @@ class FakeSupabaseQuery:
         self._payload = None
         self._single = False
 
-    def select(self, *args): return self
+    def select(self, *args):
+        return self
+
     def insert(self, data):
         self._operation = "insert"
         self._payload = data
         return self
+
     def update(self, data):
         self._operation = "update"
         self._payload = data
         return self
+
     def eq(self, k, v):
         self._filters[k] = v
         return self
-    def lte(self, k, v): return self
-    def order(self, *args, **kwargs): return self
-    def limit(self, n): return self
+
+    def lte(self, k, v):
+        return self
+
+    def order(self, *args, **kwargs):
+        return self
+
+    def limit(self, n):
+        return self
+
     def single(self):
         self._single = True
         return self
@@ -56,7 +69,9 @@ class FakeSupabaseQuery:
                     row.update(self._payload or {})
             return FakeSupabaseResponse(None)
         # select
-        results = [r for r in self._table.rows if all(r.get(k) == v for k, v in self._filters.items())]
+        results = [
+            r for r in self._table.rows if all(r.get(k) == v for k, v in self._filters.items())
+        ]
         if self._single:
             return FakeSupabaseResponse(results[0] if results else None)
         return FakeSupabaseResponse(results)
@@ -68,8 +83,10 @@ class FakeSupabaseTable:
 
     def select(self, *args):
         return FakeSupabaseQuery(self, "select")
+
     def insert(self, data):
         return FakeSupabaseQuery(self, "insert").insert(data)
+
     def update(self, data):
         return FakeSupabaseQuery(self, "update").update(data)
 
@@ -89,8 +106,8 @@ class FakeSupabaseClient:
 
 # === Tests ===
 
-class TestWorkerIdentity:
 
+class TestWorkerIdentity:
     def test_worker_id_returns_string(self):
         wid = worker_id()
         assert isinstance(wid, str)
@@ -101,7 +118,6 @@ class TestWorkerIdentity:
 
 
 class TestClaimQueueRecord:
-
     @pytest.mark.asyncio
     async def test_claim_returns_none_when_empty(self, monkeypatch):
         fake_sb = FakeSupabaseClient({"agent_task_queue": []})
@@ -112,15 +128,11 @@ class TestClaimQueueRecord:
 
 
 class TestProcessQueueRecord:
-
     @pytest.mark.asyncio
     async def test_process_missing_task_id_marks_processed(self, monkeypatch):
         queue_record = {"id": "q1", "task_id": None, "status": "processing"}
 
-        fake_sb = FakeSupabaseClient({
-            "agent_task_queue": [queue_record],
-            "agent_tasks": []
-        })
+        fake_sb = FakeSupabaseClient({"agent_task_queue": [queue_record], "agent_tasks": []})
         monkeypatch.setattr("app.workers.task_worker.get_supabase_admin", lambda: fake_sb)
 
         await process_queue_record(queue_record)
@@ -132,10 +144,7 @@ class TestProcessQueueRecord:
     async def test_process_missing_task_marks_processed(self, monkeypatch):
         queue_record = {"id": "q1", "task_id": "t_nonexistent", "status": "processing"}
 
-        fake_sb = FakeSupabaseClient({
-            "agent_task_queue": [queue_record],
-            "agent_tasks": []
-        })
+        fake_sb = FakeSupabaseClient({"agent_task_queue": [queue_record], "agent_tasks": []})
         monkeypatch.setattr("app.workers.task_worker.get_supabase_admin", lambda: fake_sb)
 
         await process_queue_record(queue_record)
@@ -145,18 +154,36 @@ class TestProcessQueueRecord:
 
     @pytest.mark.asyncio
     async def test_process_successful_task(self, monkeypatch):
-        queue_record = {"id": "q1", "task_id": "t1", "status": "processing", "attempts": 0, "max_attempts": 3}
-        task_data = {"id": "t1", "agent_type": "bookkeeper", "user_id": "u1", "task": "Test", "context": {}, "status": "queued", "started_at": None}
+        queue_record = {
+            "id": "q1",
+            "task_id": "t1",
+            "status": "processing",
+            "attempts": 0,
+            "max_attempts": 3,
+        }
+        task_data = {
+            "id": "t1",
+            "agent_type": "bookkeeper",
+            "user_id": "u1",
+            "task": "Test",
+            "context": {},
+            "status": "queued",
+            "started_at": None,
+        }
 
-        fake_sb = FakeSupabaseClient({
-            "agent_task_queue": [queue_record],
-            "agent_tasks": [task_data],
-            "agent_task_events": [],
-        })
+        fake_sb = FakeSupabaseClient(
+            {
+                "agent_task_queue": [queue_record],
+                "agent_tasks": [task_data],
+                "agent_task_events": [],
+            }
+        )
         monkeypatch.setattr("app.workers.task_worker.get_supabase_admin", lambda: fake_sb)
 
         class FakeRuntime:
-            def __init__(self, agent_type, user_id): pass
+            def __init__(self, agent_type, user_id):
+                pass
+
             async def execute(self, task, context, task_id=None):
                 return {"success": True, "result": "Done"}
 
@@ -172,14 +199,29 @@ class TestProcessQueueRecord:
 
     @pytest.mark.asyncio
     async def test_process_unknown_agent_type_fails(self, monkeypatch):
-        queue_record = {"id": "q1", "task_id": "t1", "status": "processing", "attempts": 0, "max_attempts": 3}
-        task_data = {"id": "t1", "agent_type": "nonexistent_agent", "user_id": "u1", "task": "Test", "context": {}, "status": "queued"}
+        queue_record = {
+            "id": "q1",
+            "task_id": "t1",
+            "status": "processing",
+            "attempts": 0,
+            "max_attempts": 3,
+        }
+        task_data = {
+            "id": "t1",
+            "agent_type": "nonexistent_agent",
+            "user_id": "u1",
+            "task": "Test",
+            "context": {},
+            "status": "queued",
+        }
 
-        fake_sb = FakeSupabaseClient({
-            "agent_task_queue": [queue_record],
-            "agent_tasks": [task_data],
-            "agent_task_events": [],
-        })
+        fake_sb = FakeSupabaseClient(
+            {
+                "agent_task_queue": [queue_record],
+                "agent_tasks": [task_data],
+                "agent_task_events": [],
+            }
+        )
         monkeypatch.setattr("app.workers.task_worker.get_supabase_admin", lambda: fake_sb)
 
         await process_queue_record(queue_record)

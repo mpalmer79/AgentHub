@@ -1,6 +1,7 @@
 """
 Tests for AgentRuntime execution.
 """
+
 import pytest
 from unittest.mock import MagicMock, AsyncMock
 
@@ -10,14 +11,17 @@ from app.agents.registry import AgentType
 
 # === Fake classes (defined here, not imported) ===
 
+
 class FakeTextBlock:
     type = "text"
+
     def __init__(self, text: str):
         self.text = text
 
 
 class FakeToolUseBlock:
     type = "tool_use"
+
     def __init__(self, tool_id: str, name: str, input_data: dict):
         self.id = tool_id
         self.name = name
@@ -28,6 +32,14 @@ class FakeUsage:
     def __init__(self, input_tokens: int = 100, output_tokens: int = 50):
         self.input_tokens = input_tokens
         self.output_tokens = output_tokens
+
+
+def _patch_anthropic_and_supabase(monkeypatch, responses):
+    monkeypatch.setattr(
+        "app.agents.runtime.anthropic.Anthropic",
+        lambda api_key=None: FakeAnthropicClient(responses),
+    )
+    monkeypatch.setattr("app.agents.runtime.get_supabase", lambda *_a, **_k: FakeSupabaseClient())
 
 
 class FakeClaudeResponse:
@@ -61,13 +73,22 @@ class FakeSupabaseTable:
     def __init__(self):
         self.rows = []
 
-    def select(self, *args): return self
+    def select(self, *args):
+        return self
+
     def insert(self, data):
         self.rows.append(data)
         return self
-    def update(self, data): return self
-    def eq(self, k, v): return self
-    def single(self): return self
+
+    def update(self, data):
+        return self
+
+    def eq(self, k, v):
+        return self
+
+    def single(self):
+        return self
+
     def execute(self):
         return FakeSupabaseResponse(None)
 
@@ -84,20 +105,18 @@ class FakeSupabaseClient:
 
 # === Tests ===
 
-class TestAgentRuntimeBasic:
 
+class TestAgentRuntimeBasic:
     @pytest.mark.asyncio
     async def test_end_turn_returns_success(self, monkeypatch):
         responses = [
             FakeClaudeResponse(
-                stop_reason="end_turn",
-                content=[FakeTextBlock("Task completed successfully.")]
+                stop_reason="end_turn", content=[FakeTextBlock("Task completed successfully.")]
             )
         ]
 
         monkeypatch.setattr(
-            "app.agents.runtime.anthropic.Anthropic",
-            lambda api_key: FakeAnthropicClient(responses)
+            "app.agents.runtime.anthropic.Anthropic", lambda api_key: FakeAnthropicClient(responses)
         )
 
         fake_sb = FakeSupabaseClient()
@@ -112,13 +131,10 @@ class TestAgentRuntimeBasic:
 
     @pytest.mark.asyncio
     async def test_empty_response_still_succeeds(self, monkeypatch):
-        responses = [
-            FakeClaudeResponse(stop_reason="end_turn", content=[FakeTextBlock("")])
-        ]
+        responses = [FakeClaudeResponse(stop_reason="end_turn", content=[FakeTextBlock("")])]
 
         monkeypatch.setattr(
-            "app.agents.runtime.anthropic.Anthropic",
-            lambda api_key: FakeAnthropicClient(responses)
+            "app.agents.runtime.anthropic.Anthropic", lambda api_key: FakeAnthropicClient(responses)
         )
 
         fake_sb = FakeSupabaseClient()
@@ -132,26 +148,26 @@ class TestAgentRuntimeBasic:
 
 
 class TestAgentRuntimeToolUse:
-
     @pytest.mark.asyncio
     async def test_tool_use_executes_and_continues(self, monkeypatch):
         responses = [
             FakeClaudeResponse(
                 stop_reason="tool_use",
                 content=[
-                    FakeToolUseBlock("tool_1", "get_transactions",
-                                     {"start_date": "2026-01-01", "end_date": "2026-01-31"})
+                    FakeToolUseBlock(
+                        "tool_1",
+                        "get_transactions",
+                        {"start_date": "2026-01-01", "end_date": "2026-01-31"},
+                    )
                 ],
             ),
             FakeClaudeResponse(
-                stop_reason="end_turn",
-                content=[FakeTextBlock("Found 5 transactions.")]
-            )
+                stop_reason="end_turn", content=[FakeTextBlock("Found 5 transactions.")]
+            ),
         ]
 
         monkeypatch.setattr(
-            "app.agents.runtime.anthropic.Anthropic",
-            lambda api_key: FakeAnthropicClient(responses)
+            "app.agents.runtime.anthropic.Anthropic", lambda api_key: FakeAnthropicClient(responses)
         )
 
         fake_sb = FakeSupabaseClient()
@@ -160,6 +176,7 @@ class TestAgentRuntimeToolUse:
         runtime = AgentRuntime(agent_type=AgentType.BOOKKEEPER, user_id="user_123")
 
         tool_calls = []
+
         async def tracking_execute(tool_name, tool_input):
             tool_calls.append((tool_name, tool_input))
             return {"transactions": [], "count": 5}
@@ -175,20 +192,17 @@ class TestAgentRuntimeToolUse:
 
 
 class TestAgentRuntimeMaxIterations:
-
     @pytest.mark.asyncio
     async def test_max_iterations_returns_failure(self, monkeypatch):
         responses = [
             FakeClaudeResponse(
-                stop_reason="tool_use",
-                content=[FakeToolUseBlock(f"t{i}", "get_transactions", {})]
+                stop_reason="tool_use", content=[FakeToolUseBlock(f"t{i}", "get_transactions", {})]
             )
             for i in range(15)
         ]
 
         monkeypatch.setattr(
-            "app.agents.runtime.anthropic.Anthropic",
-            lambda api_key: FakeAnthropicClient(responses)
+            "app.agents.runtime.anthropic.Anthropic", lambda api_key: FakeAnthropicClient(responses)
         )
 
         fake_sb = FakeSupabaseClient()
@@ -198,10 +212,65 @@ class TestAgentRuntimeMaxIterations:
 
         async def fake_execute(tool_name, tool_input):
             return {"ok": True}
+
         runtime.executor.execute = fake_execute
 
         result = await runtime.execute("Infinite task", context={})
 
         assert result["success"] is False
         assert "Max iterations" in result["error"]
-        assert result["iterations"] == 10
+        assert result["failure_code"] == "MAX_ITERATIONS"
+        assert result["iterations"] == runtime.max_iterations
+
+
+class TestAgentRuntimeBudget:
+    @pytest.mark.asyncio
+    async def test_task_aborts_when_budget_exceeded(self, monkeypatch):
+        # Two tool-use rounds, each scripted to consume more than the budget.
+        responses = [
+            FakeClaudeResponse(
+                stop_reason="tool_use",
+                content=[FakeToolUseBlock("t1", "get_transactions", {})],
+            ),
+            FakeClaudeResponse(
+                stop_reason="tool_use",
+                content=[FakeToolUseBlock("t2", "get_transactions", {})],
+            ),
+        ]
+        # Inflate usage so we trip the budget after iter 2.
+        for r in responses:
+            r.usage = FakeUsage(input_tokens=600, output_tokens=600)
+
+        _patch_anthropic_and_supabase(monkeypatch, responses)
+
+        runtime = AgentRuntime(
+            agent_type=AgentType.BOOKKEEPER,
+            user_id="user_123",
+            max_tokens_per_task=2000,
+        )
+
+        async def fake_execute(tool_name, tool_input):
+            return {"ok": True}
+
+        runtime.executor.execute = fake_execute
+
+        result = await runtime.execute("Budget runaway", context={})
+
+        assert result["success"] is False
+        assert result["failure_code"] == "BUDGET_EXCEEDED"
+        assert result["total_tokens"] > 2000
+
+    @pytest.mark.asyncio
+    async def test_model_is_configurable(self, monkeypatch):
+        responses = [FakeClaudeResponse("end_turn", [FakeTextBlock("done")])]
+        _patch_anthropic_and_supabase(monkeypatch, responses)
+
+        runtime = AgentRuntime(
+            agent_type=AgentType.BOOKKEEPER,
+            user_id="user_123",
+            model="claude-haiku-4-5-20251001",
+        )
+        assert runtime.model == "claude-haiku-4-5-20251001"
+
+        result = await runtime.execute("Hello", context={})
+        assert result["success"] is True

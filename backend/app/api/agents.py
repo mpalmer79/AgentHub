@@ -47,12 +47,7 @@ async def get_agent_catalog():
 @router.get("/subscriptions")
 async def get_my_subscriptions(user: CurrentUser = Depends(get_current_user)):
     supabase = get_supabase_user(user.token)
-    result = (
-        supabase.table("agent_subscriptions")
-        .select("*")
-        .eq("status", "active")
-        .execute()
-    )
+    result = supabase.table("agent_subscriptions").select("*").eq("status", "active").execute()
     return {"subscriptions": result.data or []}
 
 

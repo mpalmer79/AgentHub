@@ -5,7 +5,7 @@ def create_tool_schema(
     name: str,
     description: str,
     properties: Dict[str, Dict[str, Any]],
-    required: Optional[List[str]] = None
+    required: Optional[List[str]] = None,
 ) -> Dict[str, Any]:
     """Helper to create consistent tool schemas"""
     schema = {
@@ -14,7 +14,7 @@ def create_tool_schema(
         "input_schema": {
             "type": "object",
             "properties": properties,
-        }
+        },
     }
     if required:
         schema["input_schema"]["required"] = required

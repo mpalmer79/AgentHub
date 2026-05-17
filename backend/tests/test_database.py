@@ -1,6 +1,7 @@
 """
 Tests for database client utilities.
 """
+
 import pytest
 from unittest.mock import MagicMock, patch
 
@@ -11,16 +12,19 @@ class TestDatabaseClients:
     def test_get_supabase_admin_callable(self):
         """get_supabase_admin should be callable."""
         from app.core.database import get_supabase_admin
+
         assert callable(get_supabase_admin)
 
     def test_get_supabase_user_callable(self):
         """get_supabase_user should be callable."""
         from app.core.database import get_supabase_user
+
         assert callable(get_supabase_user)
 
     def test_get_supabase_callable(self):
         """get_supabase should be callable."""
         from app.core.database import get_supabase
+
         assert callable(get_supabase)
 
 
@@ -32,14 +36,8 @@ class TestDatabaseClientBehavior:
         mock_user_client = MagicMock()
         mock_admin_client = MagicMock()
 
-        monkeypatch.setattr(
-            "app.core.database.get_supabase_user",
-            lambda token: mock_user_client
-        )
-        monkeypatch.setattr(
-            "app.core.database.get_supabase_admin",
-            lambda: mock_admin_client
-        )
+        monkeypatch.setattr("app.core.database.get_supabase_user", lambda token: mock_user_client)
+        monkeypatch.setattr("app.core.database.get_supabase_admin", lambda: mock_admin_client)
 
         from app.core.database import get_supabase
 
@@ -51,14 +49,8 @@ class TestDatabaseClientBehavior:
         mock_user_client = MagicMock()
         mock_admin_client = MagicMock()
 
-        monkeypatch.setattr(
-            "app.core.database.get_supabase_user",
-            lambda token: mock_user_client
-        )
-        monkeypatch.setattr(
-            "app.core.database.get_supabase_admin",
-            lambda: mock_admin_client
-        )
+        monkeypatch.setattr("app.core.database.get_supabase_user", lambda token: mock_user_client)
+        monkeypatch.setattr("app.core.database.get_supabase_admin", lambda: mock_admin_client)
 
         from app.core.database import get_supabase
 

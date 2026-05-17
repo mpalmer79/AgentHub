@@ -23,7 +23,6 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
     # ============================================================
     # ORIGINAL 6 AGENTS
     # ============================================================
-    
     AgentType.BOOKKEEPER: {
         "name": "BookkeeperAI",
         "description": "Automates bookkeeping tasks including transaction categorization, account reconciliation, anomaly detection, and financial reporting.",
@@ -35,7 +34,7 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
             "Expense anomaly detection",
             "Monthly financial reports",
             "Tax-ready categorization",
-            "Multi-currency support"
+            "Multi-currency support",
         ],
         "integrations": ["QuickBooks", "Xero", "Plaid"],
         "required_integrations": ["quickbooks"],
@@ -45,10 +44,9 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
             "reconcile_accounts",
             "generate_report",
             "detect_anomalies",
-            "prepare_tax_summary"
-        ]
+            "prepare_tax_summary",
+        ],
     },
-    
     AgentType.INBOX_COMMANDER: {
         "name": "InboxCommanderAI",
         "description": "Manages your email inbox by triaging messages, drafting responses, scheduling follow-ups, and extracting action items.",
@@ -60,19 +58,13 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
             "Automatic follow-up scheduling",
             "Action item extraction",
             "Meeting request handling",
-            "Unsubscribe management"
+            "Unsubscribe management",
         ],
         "integrations": ["Gmail", "Outlook", "Google Calendar"],
         "required_integrations": ["gmail"],
         "status": "available",
-        "tasks": [
-            "triage_inbox",
-            "draft_response",
-            "schedule_followup",
-            "extract_action_items"
-        ]
+        "tasks": ["triage_inbox", "draft_response", "schedule_followup", "extract_action_items"],
     },
-    
     AgentType.HIRE_WELL: {
         "name": "HireWellAI",
         "description": "Streamlines hiring by screening resumes, scheduling interviews, sending status updates, and managing candidate communications.",
@@ -84,7 +76,7 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
             "Candidate status updates",
             "Reference check coordination",
             "Job posting optimization",
-            "Candidate pipeline tracking"
+            "Candidate pipeline tracking",
         ],
         "integrations": ["Gmail", "Google Calendar", "LinkedIn"],
         "required_integrations": ["gmail", "google_calendar"],
@@ -93,10 +85,9 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
             "screen_resumes",
             "schedule_interview",
             "send_status_update",
-            "coordinate_reference_check"
-        ]
+            "coordinate_reference_check",
+        ],
     },
-    
     AgentType.CUSTOMER_CARE: {
         "name": "CustomerCareAI",
         "description": "Handles customer support by answering FAQs, resolving common issues, escalating complex cases, and tracking satisfaction.",
@@ -108,19 +99,13 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
             "Smart escalation routing",
             "Satisfaction tracking",
             "Multi-channel support",
-            "Response templates"
+            "Response templates",
         ],
         "integrations": ["Zendesk", "Freshdesk", "Intercom", "Gmail"],
         "required_integrations": [],
         "status": "available",
-        "tasks": [
-            "answer_ticket",
-            "escalate_ticket",
-            "generate_response",
-            "track_satisfaction"
-        ]
+        "tasks": ["answer_ticket", "escalate_ticket", "generate_response", "track_satisfaction"],
     },
-    
     AgentType.SOCIAL_PILOT: {
         "name": "SocialPilotAI",
         "description": "Manages social media by creating posts, scheduling content, responding to comments, and reporting on engagement.",
@@ -132,19 +117,13 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
             "Comment response drafting",
             "Engagement analytics",
             "Hashtag optimization",
-            "Best time to post suggestions"
+            "Best time to post suggestions",
         ],
         "integrations": ["Meta", "Instagram", "LinkedIn", "Twitter"],
         "required_integrations": [],
         "status": "available",
-        "tasks": [
-            "create_post",
-            "schedule_content",
-            "respond_to_comment",
-            "generate_report"
-        ]
+        "tasks": ["create_post", "schedule_content", "respond_to_comment", "generate_report"],
     },
-    
     AgentType.APPOINTMENT: {
         "name": "AppointmentAI",
         "description": "Handles scheduling by booking appointments, sending reminders, managing rescheduling, and reducing no-shows.",
@@ -156,23 +135,16 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
             "Rescheduling management",
             "No-show reduction",
             "Calendar optimization",
-            "Buffer time management"
+            "Buffer time management",
         ],
         "integrations": ["Google Calendar", "Calendly", "Acuity"],
         "required_integrations": ["google_calendar"],
         "status": "available",
-        "tasks": [
-            "book_appointment",
-            "send_reminder",
-            "handle_reschedule",
-            "optimize_schedule"
-        ]
+        "tasks": ["book_appointment", "send_reminder", "handle_reschedule", "optimize_schedule"],
     },
-    
     # ============================================================
     # NEW 6 AGENTS
     # ============================================================
-    
     AgentType.COMPLIANCE_GUARD: {
         "name": "ComplianceGuardAI",
         "description": "Monitors regulations, tracks compliance deadlines, audits processes, and ensures your business stays compliant with all requirements.",
@@ -184,7 +156,7 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
             "Compliance gap auditing",
             "Policy document generation",
             "Audit-ready reporting",
-            "Industry-specific compliance"
+            "Industry-specific compliance",
         ],
         "integrations": ["Google Workspace", "DocuSign", "Gusto"],
         "required_integrations": [],
@@ -194,10 +166,9 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
             "track_deadlines",
             "audit_compliance",
             "generate_policy",
-            "prepare_audit_report"
-        ]
+            "prepare_audit_report",
+        ],
     },
-    
     AgentType.VENDOR_NEGOTIATOR: {
         "name": "VendorNegotiatorAI",
         "description": "Analyzes vendor contracts, benchmarks pricing, identifies savings opportunities, and automates renewal negotiations.",
@@ -209,7 +180,7 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
             "Savings opportunity identification",
             "Negotiation script generation",
             "Renewal automation",
-            "Spend analytics"
+            "Spend analytics",
         ],
         "integrations": ["QuickBooks", "Gmail", "Bank Feeds"],
         "required_integrations": [],
@@ -219,10 +190,9 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
             "benchmark_pricing",
             "identify_savings",
             "draft_negotiation",
-            "track_renewals"
-        ]
+            "track_renewals",
+        ],
     },
-    
     AgentType.PROPOSAL_PRO: {
         "name": "ProposalProAI",
         "description": "Generates customized proposals, responds to RFPs, prices projects intelligently, and tracks deal progress to close.",
@@ -234,7 +204,7 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
             "Intelligent project pricing",
             "Case study integration",
             "Follow-up automation",
-            "Win/loss analysis"
+            "Win/loss analysis",
         ],
         "integrations": ["HubSpot", "Salesforce", "Google Docs", "DocuSign"],
         "required_integrations": [],
@@ -244,10 +214,9 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
             "respond_to_rfp",
             "price_project",
             "track_proposal",
-            "analyze_win_rate"
-        ]
+            "analyze_win_rate",
+        ],
     },
-    
     AgentType.INVENTORY_IQ: {
         "name": "InventoryIQAI",
         "description": "Forecasts demand, automates reordering, optimizes stock levels, and manages multi-location inventory intelligently.",
@@ -259,7 +228,7 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
             "Stock level optimization",
             "Supplier performance tracking",
             "Slow-mover identification",
-            "Multi-location management"
+            "Multi-location management",
         ],
         "integrations": ["Shopify", "Square", "QuickBooks", "ShipStation"],
         "required_integrations": [],
@@ -269,10 +238,9 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
             "generate_purchase_order",
             "optimize_inventory",
             "track_supplier",
-            "identify_slow_movers"
-        ]
+            "identify_slow_movers",
+        ],
     },
-    
     AgentType.REPUTATION_SHIELD: {
         "name": "ReputationShieldAI",
         "description": "Monitors online reviews, drafts responses, requests reviews from happy customers, and tracks brand sentiment.",
@@ -284,7 +252,7 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
             "Review request campaigns",
             "Sentiment analysis",
             "Competitor tracking",
-            "Crisis alert system"
+            "Crisis alert system",
         ],
         "integrations": ["Google Business", "Yelp", "Facebook", "Email"],
         "required_integrations": [],
@@ -294,10 +262,9 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
             "draft_response",
             "request_reviews",
             "analyze_sentiment",
-            "track_competitors"
-        ]
+            "track_competitors",
+        ],
     },
-    
     AgentType.CASHFLOW_COMMANDER: {
         "name": "CashFlowCommanderAI",
         "description": "Projects cash flow, prioritizes collections, optimizes payment timing, and alerts you to potential cash crunches.",
@@ -309,7 +276,7 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
             "Payment timing optimization",
             "Cash crunch alerts",
             "Invoice reminder automation",
-            "Customer payment scoring"
+            "Customer payment scoring",
         ],
         "integrations": ["QuickBooks", "Xero", "Bank Accounts", "Stripe"],
         "required_integrations": ["quickbooks"],
@@ -319,9 +286,9 @@ AGENT_REGISTRY: Dict[AgentType, Dict[str, Any]] = {
             "prioritize_collections",
             "optimize_payments",
             "send_invoice_reminder",
-            "score_customer_risk"
-        ]
-    }
+            "score_customer_risk",
+        ],
+    },
 }
 
 
